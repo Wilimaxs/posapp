@@ -16,7 +16,8 @@ suspend fun <T> apiSafeCall(
             if (body != null && body.success && body.data != null) {
                 NetworkResult.Success(
                     data = body.data,
-                    message = body.message
+                    message = body.message,
+                    meta = body.meta
                 )
             } else {
                 ErrorMapper.map(response)
