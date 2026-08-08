@@ -10,12 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.project.posapp.core.theme.Spacing
+import com.project.posapp.model.ProductCategory
 
 @Composable
 fun CategorySelector(
-    categories: List<String>,
-    selectedCategory: String,
-    onCategorySelected: (String) -> Unit
+    categories: List<ProductCategory>,
+    selectedCategoryId: Long?,
+    onCategorySelected: (Long?) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -24,14 +25,25 @@ fun CategorySelector(
         horizontalArrangement =
             Arrangement.spacedBy(Spacing.Tight)
     ) {
+
+        FilterChip(
+            selected = selectedCategoryId == null,
+            onClick = {
+                onCategorySelected(null)
+            },
+            label = {
+                Text("Semua")
+            }
+        )
+
         categories.forEach { category ->
             FilterChip(
-                selected = selectedCategory == category,
+                selected = selectedCategoryId == category.id,
                 onClick = {
-                    onCategorySelected(category)
+                    onCategorySelected(category.id)
                 },
                 label = {
-                    Text(category)
+                    Text(category.name)
                 }
             )
         }

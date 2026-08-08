@@ -17,6 +17,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.project.posapp.core.theme.Spacing
+import com.project.posapp.feature.cashier.pos.CartItem
 import com.project.posapp.model.Product
 import com.project.posapp.utils.composable.ErrorState
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -24,7 +25,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun ProductGrid(
     products: List<Product>,
-    cart: Map<Long, Int>,
+    cart: Map<Long, CartItem>,
     isLoading: Boolean,
     isLoadingMore: Boolean,
     hasNextPage: Boolean,
@@ -92,7 +93,7 @@ fun ProductGrid(
 
                     ProductCard(
                         product = product,
-                        quantityInCart = cart[product.id] ?: 0,
+                        quantityInCart = cart[product.id]?.quantity ?: 0,
                         onClick = {
                             onProductClick(product)
                         }

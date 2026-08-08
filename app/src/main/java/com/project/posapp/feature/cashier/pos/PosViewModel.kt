@@ -6,6 +6,8 @@ import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.model.Product
 import com.project.posapp.repository.PosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,11 +22,34 @@ class PosViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PosUiState())
     val uiState = _uiState.asStateFlow()
 
+    private var searchJob: Job? = null
+
     init {
+        loadCategories()
         loadProducts()
     }
 
+    private fun loadCategories() {
+        viewModelScope.launch {
+            when (val result = repository.getCategories()) {
+                is NetworkResult.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            categories = result.data
+                        )
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    // Untuk sekarang tidak perlu menggagalkan seluruh POS
+                }
+            }
+        }
+    }
+
     fun loadProducts() {
+        val state = _uiState.value
+
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
@@ -33,19 +58,33 @@ class PosViewModel @Inject constructor(
                 )
             }
 
-            when (
-                val result = repository.getProducts(page = 1)
-            ) {
+            val search = state.searchQuery
+                .trim()
+                .takeIf { it.length >= 4 }
 
+            when (
+                val result = repository.getProducts(
+                    page = 1,
+                    search = search,
+                    categoryId = state.selectedCategoryId
+                )
+            ) {
                 is NetworkResult.Success -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
+
                             products = result.data.filter { product ->
                                 product.isActive
                             },
-                            currentPage = result.meta?.currentPage ?: 1,
-                            lastPage = result.meta?.lastPage ?: 1
+
+                            currentPage =
+                                result.meta?.currentPage ?: 1,
+
+                            lastPage =
+                                result.meta?.lastPage ?: 1,
+
+                            errorMessage = null
                         )
                     }
                 }
@@ -75,6 +114,10 @@ class PosViewModel @Inject constructor(
 
         val nextPage = state.currentPage + 1
 
+        val search = state.searchQuery
+            .trim()
+            .takeIf { it.length >= 4 }
+
         viewModelScope.launch {
             _uiState.update {
                 it.copy(isLoadingMore = true)
@@ -82,17 +125,17 @@ class PosViewModel @Inject constructor(
 
             when (
                 val result = repository.getProducts(
-                    page = nextPage
+                    page = nextPage,
+                    search = search,
+                    categoryId = state.selectedCategoryId
                 )
             ) {
-
                 is NetworkResult.Success -> {
                     _uiState.update { current ->
 
-                        val newProducts = result.data
-                            .filter { product ->
-                                product.isActive
-                            }
+                        val newProducts = result.data.filter {
+                            it.isActive
+                        }
 
                         current.copy(
                             isLoadingMore = false,
@@ -125,32 +168,61 @@ class PosViewModel @Inject constructor(
         }
     }
 
-    fun onSearchChange(value: String) {
+    fun onSearchChange(query: String) {
         _uiState.update {
-            it.copy(searchQuery = value)
+            it.copy(searchQuery = query)
+        }
+
+        searchJob?.cancel()
+
+        val trimmedQuery = query.trim()
+
+        if (
+            trimmedQuery.isNotEmpty() &&
+            trimmedQuery.length < 4
+        ) {
+            return
+        }
+
+        searchJob = viewModelScope.launch {
+            delay(400)
+
+            loadProducts()
         }
     }
 
-    fun onCategorySelected(category: String) {
+    fun onCategorySelected(categoryId: Long?) {
         _uiState.update {
-            it.copy(selectedCategory = category)
+            it.copy(
+                selectedCategoryId = categoryId
+            )
         }
+
+        loadProducts()
     }
+
 
     fun addProduct(product: Product) {
         if (product.stock <= 0) return
 
         _uiState.update { state ->
+
+            val currentItem = state.cart[product.id]
+
             val currentQuantity =
-                state.cart[product.id] ?: 0
+                currentItem?.quantity ?: 0
 
             if (currentQuantity >= product.stock) {
                 return@update state
             }
 
             state.copy(
-                cart = state.cart +
-                        (product.id to currentQuantity + 1)
+                cart = state.cart + (
+                        product.id to CartItem(
+                            product = product,
+                            quantity = currentQuantity + 1
+                        )
+                        )
             )
         }
     }
@@ -161,22 +233,22 @@ class PosViewModel @Inject constructor(
 
     fun decreaseQuantity(product: Product) {
         _uiState.update { state ->
-            val currentQuantity =
-                state.cart[product.id] ?: 0
 
-            when {
-                currentQuantity <= 1 -> {
-                    state.copy(
-                        cart = state.cart - product.id
-                    )
-                }
+            val item = state.cart[product.id]
+                ?: return@update state
 
-                else -> {
-                    state.copy(
-                        cart = state.cart +
-                                (product.id to currentQuantity - 1)
-                    )
-                }
+            if (item.quantity <= 1) {
+                state.copy(
+                    cart = state.cart - product.id
+                )
+            } else {
+                state.copy(
+                    cart = state.cart + (
+                            product.id to item.copy(
+                                quantity = item.quantity - 1
+                            )
+                            )
+                )
             }
         }
     }

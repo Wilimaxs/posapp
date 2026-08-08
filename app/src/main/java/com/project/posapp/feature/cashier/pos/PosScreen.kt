@@ -53,12 +53,12 @@ fun PosScreen(
 
             CategorySelector(
                 categories = state.categories,
-                selectedCategory = state.selectedCategory,
+                selectedCategoryId = state.selectedCategoryId,
                 onCategorySelected = viewModel::onCategorySelected
             )
 
             ProductGrid(
-                products = state.visibleProducts,
+                products = state.products,
                 cart = state.cart,
 
                 isLoading = state.isLoading,

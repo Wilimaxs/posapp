@@ -4,6 +4,7 @@ import com.project.posapp.core.network.ApiService
 import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.core.network.apiSafeCall
 import com.project.posapp.model.Product
+import com.project.posapp.model.ProductCategory
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,10 +14,22 @@ class PosRepository @Inject constructor(
 ) {
 
     suspend fun getProducts(
-        page: Int
+        page: Int,
+        search: String? = null,
+        categoryId: Long? = null
     ): NetworkResult<List<Product>> {
         return apiSafeCall {
-            apiService.getProducts(page)
+            apiService.getProducts(
+                page = page,
+                search = search,
+                categoryId = categoryId
+            )
+        }
+    }
+
+    suspend fun getCategories(): NetworkResult<List<ProductCategory>> {
+        return apiSafeCall {
+            apiService.getCategories()
         }
     }
 }
