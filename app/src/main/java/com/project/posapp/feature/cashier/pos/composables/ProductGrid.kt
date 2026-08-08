@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +21,7 @@ import androidx.compose.ui.Modifier
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.CartItem
 import com.project.posapp.model.Product
+import com.project.posapp.utils.composable.EmptyState
 import com.project.posapp.utils.composable.ErrorState
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -74,6 +77,19 @@ fun ProductGrid(
                 message = errorMessage,
                 onRetry = onRetry
             )
+        }
+
+        products.isEmpty() -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                EmptyState(
+                    icon = Icons.Outlined.SearchOff,
+                    title = "Produk tidak ditemukan",
+                    description = "Coba gunakan kata kunci atau kategori lain."
+                )
+            }
         }
 
         else -> {
