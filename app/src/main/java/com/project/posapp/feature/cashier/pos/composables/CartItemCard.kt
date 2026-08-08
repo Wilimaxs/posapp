@@ -22,16 +22,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.CartItem
+import com.project.posapp.feature.cashier.pos.CustomerType
+import com.project.posapp.feature.cashier.pos.pricing.basePriceFor
+import com.project.posapp.feature.cashier.pos.pricing.discountPriceFor
+import com.project.posapp.feature.cashier.pos.pricing.hasDiscountFor
+import com.project.posapp.feature.cashier.pos.pricing.lineTotal
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.toRupiah
 
 @Composable
 fun CartItemCard(
     item: CartItem,
+    customerType: CustomerType,
     onIncrease: () -> Unit,
     onDecrease: () -> Unit
 ) {
     val product = item.product
+
+    val basePrice =
+        product.basePriceFor(customerType)
+
+    val hasDiscount =
+        product.hasDiscountFor(customerType)
+
+    val priceLabel = when (customerType) {
+        CustomerType.GUEST -> "Harga normal"
+        CustomerType.MEMBER -> "Harga grosir"
+    }
 
     Column(
         modifier = Modifier
@@ -63,16 +80,16 @@ fun CartItemCard(
             )
 
             Text(
-                text = product
-                    .guestLineTotal(item.quantity)
-                    .toRupiah(),
-                style =
-                    MaterialTheme.typography.titleMedium
+                text = product.lineTotal(
+                    quantity = item.quantity,
+                    customerType = customerType
+                ).toRupiah(),
+                style = MaterialTheme.typography.titleMedium
             )
         }
 
         Text(
-            text = "Harga normal",
+            text = priceLabel,
             modifier = Modifier.padding(
                 top = Spacing.Tight
             ),
@@ -90,11 +107,13 @@ fun CartItemCard(
                 Arrangement.SpaceBetween
         ) {
 
-            if (product.hasGuestDiscount) {
+            if (hasDiscount) {
                 Column {
                     Text(
                         text = "1 item diskon: ${
-                            product.guestDiscountPrice.toRupiah()
+                            product.discountPriceFor(
+                                customerType = customerType
+                            ).toRupiah()
                         }",
                         style =
                             MaterialTheme.typography.labelMedium,
@@ -105,7 +124,7 @@ fun CartItemCard(
                     if (item.quantity > 1) {
                         Text(
                             text = "${item.quantity - 1} item lainnya: ${
-                                product.price.normal.toRupiah()
+                                basePrice.toRupiah()
                             } / item",
                             style =
                                 MaterialTheme.typography.labelSmall,
@@ -117,7 +136,7 @@ fun CartItemCard(
 
             } else {
                 Text(
-                    text = "${product.price.normal.toRupiah()} / item",
+                    text = "${basePrice.toRupiah()} / item",
                     style =
                         MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme

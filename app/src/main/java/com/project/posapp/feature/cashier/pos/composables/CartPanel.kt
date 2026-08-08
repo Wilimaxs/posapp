@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.CartItem
+import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.model.Product
 import com.project.posapp.utils.composable.EmptyState
 import com.project.posapp.utils.toRupiah
@@ -31,6 +32,7 @@ fun CartPanel(
     items: List<CartItem>,
     cartCount: Int,
     total: Long,
+    customerType: CustomerType,
     onIncrease: (Product) -> Unit,
     onDecrease: (Product) -> Unit,
     onClear: () -> Unit,
@@ -89,6 +91,7 @@ fun CartPanel(
 
                     CartItemCard(
                         item = item,
+                        customerType = customerType,
                         onIncrease = {
                             onIncrease(item.product)
                         },

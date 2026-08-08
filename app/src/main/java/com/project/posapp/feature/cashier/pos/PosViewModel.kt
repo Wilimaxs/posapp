@@ -227,6 +227,25 @@ class PosViewModel @Inject constructor(
         }
     }
 
+    fun onCustomerTypeChange(
+        customerType: CustomerType
+    ) {
+        val state = _uiState.value
+
+        if (state.customerType == customerType) {
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                customerType = customerType,
+                cart = emptyMap()
+            )
+        }
+
+        loadProducts()
+    }
+
     fun increaseQuantity(product: Product) {
         addProduct(product)
     }

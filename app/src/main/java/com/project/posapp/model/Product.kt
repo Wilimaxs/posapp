@@ -22,30 +22,7 @@ data class Product(
 
     @SerializedName("is_active")
     val isActive: Boolean
-) {
-    val hasGuestDiscount: Boolean
-        get() = discount?.customerScope.equals("guest", ignoreCase = true) &&
-                (discount?.value ?: 0L) > 0L
-
-    val guestDiscountPrice: Long
-        get() = if (hasGuestDiscount) {
-            (price.normal - (discount?.value ?: 0L))
-                .coerceAtLeast(0L)
-        } else {
-            price.normal
-        }
-
-    fun guestLineTotal(quantity: Int): Long {
-        if (quantity <= 0) return 0L
-
-        return if (hasGuestDiscount) {
-            guestDiscountPrice +
-                    (price.normal * (quantity - 1))
-        } else {
-            price.normal * quantity
-        }
-    }
-}
+)
 
 data class ProductCategory(
     val id: Long,

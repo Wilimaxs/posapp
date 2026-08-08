@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -44,7 +46,17 @@ fun PosScreen(
                 .padding(Spacing.Large)
         ) {
 
-            CustomerSelector()
+            CustomerSelector(
+                customerType = state.customerType,
+                onCustomerTypeChange = viewModel::onCustomerTypeChange,
+                onChooseMember = {
+                    // Nanti buka overlay pilih member
+                }
+            )
+
+            Spacer(
+                modifier = Modifier.height(Spacing.Large)
+            )
 
             ProductSearchBar(
                 value = state.searchQuery,
@@ -60,6 +72,7 @@ fun PosScreen(
             ProductGrid(
                 products = state.products,
                 cart = state.cart,
+                customerType = state.customerType,
 
                 isLoading = state.isLoading,
                 isLoadingMore = state.isLoadingMore,
@@ -78,6 +91,7 @@ fun PosScreen(
             items = state.cartItems,
             cartCount = state.cartCount,
             total = state.total,
+            customerType = state.customerType,
             onIncrease = viewModel::increaseQuantity,
             onDecrease = viewModel::decreaseQuantity,
             onClear = viewModel::clearCart

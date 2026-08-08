@@ -30,6 +30,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.core.theme.Warning
+import com.project.posapp.feature.cashier.pos.CustomerType
+import com.project.posapp.feature.cashier.pos.pricing.basePriceFor
+import com.project.posapp.feature.cashier.pos.pricing.discountPriceFor
+import com.project.posapp.feature.cashier.pos.pricing.hasDiscountFor
 import com.project.posapp.model.Product
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.toRupiah
@@ -38,6 +42,7 @@ import com.project.posapp.utils.toRupiah
 fun ProductCard(
     product: Product,
     quantityInCart: Int,
+    customerType: CustomerType,
     onClick: () -> Unit
 ) {
     val isOutOfStock = product.stock <= 0
@@ -51,6 +56,15 @@ fun ProductCard(
         } else {
             MaterialTheme.colorScheme.outlineVariant
         }
+
+    val basePrice =
+        product.basePriceFor(customerType)
+
+    val hasDiscount =
+        product.hasDiscountFor(customerType)
+
+    val discountPrice =
+        product.discountPriceFor(customerType)
 
     Column(
         modifier = Modifier
@@ -201,20 +215,19 @@ fun ProductCard(
                 )
             )
 
-            if (product.hasGuestDiscount) {
-
+            if (hasDiscount) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = product.price.normal.toRupiah(),
+                        text = basePrice.toRupiah(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textDecoration = TextDecoration.LineThrough
                     )
 
                     Text(
-                        text = product.guestDiscountPrice.toRupiah(),
+                        text = discountPrice.toRupiah(),
                         modifier = Modifier.padding(
                             start = Spacing.Tight
                         ),
@@ -231,7 +244,7 @@ fun ProductCard(
 
             } else {
                 Text(
-                    text = product.price.normal.toRupiah(),
+                    text = basePrice.toRupiah(),
                     style = MaterialTheme.typography.titleMedium,
                     color = if (isOutOfStock) {
                         MaterialTheme.colorScheme.onSurfaceVariant
