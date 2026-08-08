@@ -2,71 +2,65 @@ package com.project.posapp.feature.cashier.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.project.posapp.route.Screen
+import com.project.posapp.core.theme.Spacing
+import com.project.posapp.ui.theme.Radius
 
 @Composable
 fun SidebarItem(
-    screen: Screen,
+    title: String,
+    icon: ImageVector,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val icon = when (screen) {
-        Screen.POS -> Icons.Outlined.ShoppingCart
-        Screen.TRANSACTION -> Icons.AutoMirrored.Outlined.ReceiptLong
-//        Screen.RECEIVABLE -> Icons.Outlined.AccountBalanceWallet
-//        Screen.RETURN -> Icons.AutoMirrored.Outlined.KeyboardReturn
-//        Screen.SHIFT -> Icons.Outlined.Schedule
+    val contentColor = if (selected) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
     }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
+    Column(
+        modifier = modifier
+            .size(56.dp)
             .background(
                 color = if (selected) {
                     MaterialTheme.colorScheme.primaryContainer
                 } else {
-                    MaterialTheme.colorScheme.surface
+                    MaterialTheme.colorScheme.surfaceContainer
                 },
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(Radius.Medium)
             )
-            .clickable {
-                onClick()
-            }
-            .padding(
-                horizontal = 12.dp,
-                vertical = 12.dp
-            ),
-        verticalAlignment = Alignment.CenterVertically
+            .clickable(onClick = onClick),
+        verticalArrangement = Arrangement.spacedBy(
+            Spacing.Micro,
+            Alignment.CenterVertically
+        ),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Icon(
             imageVector = icon,
-            contentDescription = screen.title
-        )
-
-        Spacer(
-            modifier = Modifier.width(12.dp)
+            contentDescription = title,
+            modifier = Modifier.size(24.dp),
+            tint = contentColor
         )
 
         Text(
-            text = screen.title,
-            style = MaterialTheme.typography.bodyMedium
+            text = title,
+            style = MaterialTheme.typography.labelMedium,
+            color = contentColor
         )
     }
 }
