@@ -1,6 +1,7 @@
 package com.project.posapp.feature.cashier.pos
 
 import com.project.posapp.feature.cashier.pos.pricing.pricing
+import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.Product
 import com.project.posapp.model.ProductCategory
 
@@ -13,6 +14,8 @@ data class PosUiState(
     val cart: Map<Long, CartItem> = emptyMap(),
 
     val customerType: CustomerType = CustomerType.GUEST,
+
+    val selectedMember: PosCustomer? = null,
 
     val searchQuery: String = "",
     val selectedCategoryId: Long? = null,

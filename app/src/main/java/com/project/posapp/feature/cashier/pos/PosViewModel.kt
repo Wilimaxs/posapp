@@ -3,6 +3,7 @@ package com.project.posapp.feature.cashier.pos
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.posapp.core.network.NetworkResult
+import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.Product
 import com.project.posapp.repository.PosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -227,6 +228,14 @@ class PosViewModel @Inject constructor(
         }
     }
 
+    fun selectMember(customer: PosCustomer) {
+        _uiState.update {
+            it.copy(
+                selectedMember = customer
+            )
+        }
+    }
+
     fun onCustomerTypeChange(
         customerType: CustomerType
     ) {
@@ -239,6 +248,9 @@ class PosViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 customerType = customerType,
+
+                selectedMember = null,
+
                 cart = emptyMap()
             )
         }
