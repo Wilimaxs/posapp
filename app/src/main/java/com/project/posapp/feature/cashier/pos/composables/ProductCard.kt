@@ -31,9 +31,7 @@ import coil.compose.AsyncImage
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.core.theme.Warning
 import com.project.posapp.feature.cashier.pos.CustomerType
-import com.project.posapp.feature.cashier.pos.pricing.basePriceFor
-import com.project.posapp.feature.cashier.pos.pricing.discountPriceFor
-import com.project.posapp.feature.cashier.pos.pricing.hasDiscountFor
+import com.project.posapp.feature.cashier.pos.pricing.pricing
 import com.project.posapp.model.Product
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.toRupiah
@@ -48,28 +46,13 @@ fun ProductCard(
     val isOutOfStock = product.stock <= 0
     val isLowStock =
         product.stock in 1..product.minimumStock
-    val available = product.stock > 0
 
-    val borderColor =
-        if (quantityInCart > 0) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.outlineVariant
-        }
-
-    val basePrice =
-        product.basePriceFor(customerType)
-
-    val hasDiscount =
-        product.hasDiscountFor(customerType)
-
-    val discountPrice =
-        product.discountPriceFor(customerType)
+    val pricing = product.pricing(customerType)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .alpha(if (available) 1f else 0.55f)
+            .alpha(if (isOutOfStock) 0.55f else 1f)
             .background(
                 color = if (quantityInCart > 0) {
                     MaterialTheme.colorScheme.primary
@@ -81,11 +64,15 @@ fun ProductCard(
             )
             .border(
                 width = 1.dp,
-                color = borderColor,
+                color = if (quantityInCart > 0) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 shape = RoundedCornerShape(Radius.Medium)
             )
             .clickable(
-                enabled = available,
+                enabled = !isOutOfStock,
                 onClick = onClick
             )
     ) {
@@ -215,19 +202,19 @@ fun ProductCard(
                 )
             )
 
-            if (hasDiscount) {
+            if (pricing.hasDiscount) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = basePrice.toRupiah(),
+                        text = pricing.basePrice.toRupiah(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textDecoration = TextDecoration.LineThrough
                     )
 
                     Text(
-                        text = discountPrice.toRupiah(),
+                        text = pricing.discountedPrice!!.toRupiah(),
                         modifier = Modifier.padding(
                             start = Spacing.Tight
                         ),
@@ -244,7 +231,7 @@ fun ProductCard(
 
             } else {
                 Text(
-                    text = basePrice.toRupiah(),
+                    text = pricing.basePrice.toRupiah(),
                     style = MaterialTheme.typography.titleMedium,
                     color = if (isOutOfStock) {
                         MaterialTheme.colorScheme.onSurfaceVariant
@@ -255,10 +242,13 @@ fun ProductCard(
             }
 
             Text(
-                text = "Grosir: ${product.price.grocier.toRupiah()}",
-                modifier = Modifier.padding(
-                    top = Spacing.Micro
-                ),
+                text = when (customerType) {
+                    CustomerType.GUEST ->
+                        "Grosir: ${product.price.grocier.toRupiah()}"
+
+                    CustomerType.MEMBER ->
+                        "Normal: ${product.price.normal.toRupiah()}"
+                },
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

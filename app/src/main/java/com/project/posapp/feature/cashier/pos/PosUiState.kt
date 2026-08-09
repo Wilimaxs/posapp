@@ -1,6 +1,6 @@
 package com.project.posapp.feature.cashier.pos
 
-import com.project.posapp.feature.cashier.pos.pricing.lineTotal
+import com.project.posapp.feature.cashier.pos.pricing.pricing
 import com.project.posapp.model.Product
 import com.project.posapp.model.ProductCategory
 
@@ -31,10 +31,10 @@ data class PosUiState(
 
     val total: Long
         get() = cart.values.sumOf {
-            it.product.lineTotal(
-                quantity = it.quantity,
-                customerType = customerType
-            )
+            it.product.pricing(
+                customerType = customerType,
+                quantity = it.quantity
+            ).total
         }
 
     val hasNextPage: Boolean
