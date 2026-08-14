@@ -39,7 +39,7 @@ class PosCustomerViewModel @Inject constructor(
 
     fun loadNextPage() {
         val state = _uiState.value
-        if (state.isLoading || state.isLoadingMore || state.hasNextPage) {
+        if (state.isLoading || state.isLoadingMore || !state.hasNextPage) {
             return
         }
         fetchCustomers(
