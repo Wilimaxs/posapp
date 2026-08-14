@@ -49,42 +49,63 @@ class PosViewModel @Inject constructor(
     }
 
     fun loadProducts() {
+        fetchProducts(page = 1)
+    }
+
+    fun loadNextPage() {
+        val state = _uiState.value
+
+        if (state.isLoading || state.isLoadingMore || !state.hasNextPage) {
+            return
+        }
+
+        fetchProducts(
+            page = state.currentPage + 1,
+            append = true
+        )
+    }
+
+    private fun fetchProducts(
+        page: Int,
+        append: Boolean = false
+    ) {
         val state = _uiState.value
 
         viewModelScope.launch {
             _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    errorMessage = null
-                )
+                if (append) {
+                    it.copy(isLoadingMore = true)
+                } else {
+                    it.copy(
+                        isLoading = true,
+                        errorMessage = null
+                    )
+                }
             }
 
-            val search = state.searchQuery
-                .trim()
-                .takeIf { it.length >= 4 }
+            val result = repository.getProducts(
+                page = page,
+                search = state.searchQuery.trim().takeIf { it.length >= 4 },
+                categoryId = state.selectedCategoryId
+            )
 
-            when (
-                val result = repository.getProducts(
-                    page = 1,
-                    search = search,
-                    categoryId = state.selectedCategoryId
-                )
-            ) {
+            when (result) {
                 is NetworkResult.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
+                    _uiState.update { current ->
+                        val products = result.data.filter(Product::isActive)
 
-                            products = result.data.filter { product ->
-                                product.isActive
+                        current.copy(
+                            isLoading = false,
+                            isLoadingMore = false,
+
+                            products = if (append) {
+                                (current.products + products).distinctBy(Product::id)
+                            } else {
+                                products
                             },
 
-                            currentPage =
-                                result.meta?.currentPage ?: 1,
-
-                            lastPage =
-                                result.meta?.lastPage ?: 1,
-
+                            currentPage = result.meta?.currentPage ?: page,
+                            lastPage = result.meta?.lastPage ?: current.lastPage,
                             errorMessage = null
                         )
                     }
@@ -94,74 +115,12 @@ class PosViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = result.message
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    fun loadNextPage() {
-        val state = _uiState.value
-
-        if (
-            state.isLoading ||
-            state.isLoadingMore ||
-            !state.hasNextPage
-        ) {
-            return
-        }
-
-        val nextPage = state.currentPage + 1
-
-        val search = state.searchQuery
-            .trim()
-            .takeIf { it.length >= 4 }
-
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(isLoadingMore = true)
-            }
-
-            when (
-                val result = repository.getProducts(
-                    page = nextPage,
-                    search = search,
-                    categoryId = state.selectedCategoryId
-                )
-            ) {
-                is NetworkResult.Success -> {
-                    _uiState.update { current ->
-
-                        val newProducts = result.data.filter {
-                            it.isActive
-                        }
-
-                        current.copy(
                             isLoadingMore = false,
-
-                            products = (
-                                    current.products + newProducts
-                                    ).distinctBy {
-                                    it.id
-                                },
-
-                            currentPage =
-                                result.meta?.currentPage
-                                    ?: nextPage,
-
-                            lastPage =
-                                result.meta?.lastPage
-                                    ?: current.lastPage
-                        )
-                    }
-                }
-
-                is NetworkResult.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoadingMore = false
+                            errorMessage = if (append) {
+                                it.errorMessage
+                            } else {
+                                result.message
+                            }
                         )
                     }
                 }
@@ -170,24 +129,18 @@ class PosViewModel @Inject constructor(
     }
 
     fun onSearchChange(query: String) {
-        _uiState.update {
-            it.copy(searchQuery = query)
-        }
+        _uiState.update { it.copy(searchQuery = query) }
 
         searchJob?.cancel()
 
         val trimmedQuery = query.trim()
 
-        if (
-            trimmedQuery.isNotEmpty() &&
-            trimmedQuery.length < 4
-        ) {
+        if (trimmedQuery.isNotEmpty() && trimmedQuery.length < 4) {
             return
         }
 
         searchJob = viewModelScope.launch {
-            delay(400)
-
+            delay(timeMillis = 400)
             loadProducts()
         }
     }
@@ -208,12 +161,9 @@ class PosViewModel @Inject constructor(
 
         _uiState.update { state ->
 
-            val currentItem = state.cart[product.id]
+            val quantity = state.cart[product.id]?.quantity ?: 0
 
-            val currentQuantity =
-                currentItem?.quantity ?: 0
-
-            if (currentQuantity >= product.stock) {
+            if (quantity >= product.stock) {
                 return@update state
             }
 
@@ -221,67 +171,65 @@ class PosViewModel @Inject constructor(
                 cart = state.cart + (
                         product.id to CartItem(
                             product = product,
-                            quantity = currentQuantity + 1
-                        )
-                        )
+                            quantity = quantity + 1
+                        ))
             )
         }
     }
 
-    fun selectMember(customer: PosCustomer) {
-        _uiState.update {
-            it.copy(
-                selectedMember = customer
+    fun decreaseQuantity(product: Product) {
+        _uiState.update { state ->
+            val item = state.cart[product.id] ?: return@update state
+
+            state.copy(
+                cart = if (item.quantity <= 1) {
+                    state.cart - product.id
+                } else {
+                    state.cart + (
+                            product.id to item.copy(quantity = item.quantity - 1)
+                            )
+                }
             )
         }
     }
 
-    fun onCustomerTypeChange(
-        customerType: CustomerType
-    ) {
-        val state = _uiState.value
-
-        if (state.customerType == customerType) {
+    fun onCustomerTypeChange(customerType: CustomerType) {
+        if (_uiState.value.customerType == customerType) {
             return
         }
 
         _uiState.update {
             it.copy(
                 customerType = customerType,
-
                 selectedMember = null,
-
                 cart = emptyMap()
             )
         }
-
         loadProducts()
+    }
+
+    fun showCustomerPicker() {
+        _uiState.update {
+            it.copy(showCustomerPicker = true)
+        }
+    }
+
+    fun hideCustomerPicker() {
+        _uiState.update {
+            it.copy(showCustomerPicker = false)
+        }
+    }
+    fun selectMember(customer: PosCustomer) {
+        _uiState.update {
+            it.copy(
+                selectedMember = customer,
+                showCustomerPicker = false
+            )
+        }
     }
 
     fun increaseQuantity(product: Product) {
         addProduct(product)
-    }
-
-    fun decreaseQuantity(product: Product) {
-        _uiState.update { state ->
-
-            val item = state.cart[product.id]
-                ?: return@update state
-
-            if (item.quantity <= 1) {
-                state.copy(
-                    cart = state.cart - product.id
-                )
-            } else {
-                state.copy(
-                    cart = state.cart + (
-                            product.id to item.copy(
-                                quantity = item.quantity - 1
-                            )
-                            )
-                )
-            }
-        }
     }
 
     fun clearCart() {

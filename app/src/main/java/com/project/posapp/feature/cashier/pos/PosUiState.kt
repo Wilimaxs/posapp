@@ -14,8 +14,8 @@ data class PosUiState(
     val cart: Map<Long, CartItem> = emptyMap(),
 
     val customerType: CustomerType = CustomerType.GUEST,
-
     val selectedMember: PosCustomer? = null,
+    val showCustomerPicker: Boolean = false,
 
     val searchQuery: String = "",
     val selectedCategoryId: Long? = null,
@@ -26,11 +26,9 @@ data class PosUiState(
     val errorMessage: String? = null
 ) {
 
-    val cartItems: List<CartItem>
-        get() = cart.values.toList()
+    val cartItems: List<CartItem> get() = cart.values.toList()
 
-    val cartCount: Int
-        get() = cart.values.sumOf { it.quantity }
+    val cartCount: Int get() = cart.values.sumOf { it.quantity }
 
     val total: Long
         get() = cart.values.sumOf {
@@ -40,8 +38,7 @@ data class PosUiState(
             ).total
         }
 
-    val hasNextPage: Boolean
-        get() = currentPage < lastPage
+    val hasNextPage: Boolean get() = currentPage < lastPage
 }
 
 data class CartItem(
