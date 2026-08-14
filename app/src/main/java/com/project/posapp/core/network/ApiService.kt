@@ -2,7 +2,7 @@ package com.project.posapp.core.network
 
 import com.project.posapp.model.ApiResponse
 import com.project.posapp.model.PosCustomer
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
 import retrofit2.Response
 import retrofit2.http.GET
@@ -16,7 +16,7 @@ interface ApiService {
         @Query("page") page: Int = 1,
         @Query("search") search: String? = null,
         @Query("category_id") categoryId: Long? = null
-    ): Response<ApiResponse<List<Product>>>
+    ): Response<ApiResponse<List<PosProduct>>>
 
     @GET("v1/categories")
     suspend fun getCategories(): Response<ApiResponse<List<ProductCategory>>>

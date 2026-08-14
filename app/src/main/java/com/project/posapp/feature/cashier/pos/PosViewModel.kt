@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.model.PosCustomer
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 import com.project.posapp.repository.PosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -92,14 +92,14 @@ class PosViewModel @Inject constructor(
             when (result) {
                 is NetworkResult.Success -> {
                     _uiState.update { current ->
-                        val products = result.data.filter(Product::isActive)
+                        val products = result.data.filter(PosProduct::isActive)
 
                         current.copy(
                             isLoading = false,
                             isLoadingMore = false,
 
                             products = if (append) {
-                                (current.products + products).distinctBy(Product::id)
+                                (current.products + products).distinctBy(PosProduct::id)
                             } else {
                                 products
                             },
@@ -156,7 +156,7 @@ class PosViewModel @Inject constructor(
     }
 
 
-    fun addProduct(product: Product) {
+    fun addProduct(product: PosProduct) {
         if (product.stock <= 0) return
 
         _uiState.update { state ->
@@ -177,7 +177,7 @@ class PosViewModel @Inject constructor(
         }
     }
 
-    fun decreaseQuantity(product: Product) {
+    fun decreaseQuantity(product: PosProduct) {
         _uiState.update { state ->
             val item = state.cart[product.id] ?: return@update state
 
@@ -229,7 +229,7 @@ class PosViewModel @Inject constructor(
         }
     }
 
-    fun increaseQuantity(product: Product) {
+    fun increaseQuantity(product: PosProduct) {
         addProduct(product)
     }
 

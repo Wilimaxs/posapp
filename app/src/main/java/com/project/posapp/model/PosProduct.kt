@@ -2,7 +2,7 @@ package com.project.posapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Product(
+data class PosProduct(
     val id: Long,
     val sku: String,
     val barcode: String?,

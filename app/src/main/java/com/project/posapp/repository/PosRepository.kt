@@ -3,7 +3,7 @@ package com.project.posapp.repository
 import com.project.posapp.core.network.ApiService
 import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.core.network.apiSafeCall
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,7 +17,7 @@ class PosRepository @Inject constructor(
         page: Int,
         search: String? = null,
         categoryId: Long? = null
-    ): NetworkResult<List<Product>> {
+    ): NetworkResult<List<PosProduct>> {
         return apiSafeCall {
             apiService.getProducts(
                 page = page,

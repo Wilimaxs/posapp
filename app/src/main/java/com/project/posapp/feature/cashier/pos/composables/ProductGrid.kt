@@ -43,7 +43,7 @@ import com.project.posapp.core.theme.Warning
 import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.feature.cashier.pos.PosUiState
 import com.project.posapp.feature.cashier.pos.calculatePricing
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.composable.EmptyState
 import com.project.posapp.utils.composable.ErrorState
@@ -55,7 +55,7 @@ fun ProductGrid(
     state: PosUiState,
     onRetry: () -> Unit,
     onLoadMore: () -> Unit,
-    onProductClick: (Product) -> Unit
+    onProductClick: (PosProduct) -> Unit
 ) {
 
     val gridState = rememberLazyGridState()
@@ -141,7 +141,7 @@ fun ProductGrid(
 
 @Composable
 private fun ProductCard(
-    product: Product,
+    product: PosProduct,
     quantityInCart: Int,
     customerType: CustomerType,
     onClick: () -> Unit

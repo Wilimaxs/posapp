@@ -33,7 +33,7 @@ import com.project.posapp.feature.cashier.pos.CartItem
 import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.feature.cashier.pos.PosUiState
 import com.project.posapp.feature.cashier.pos.calculatePricing
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.composable.EmptyState
 import com.project.posapp.utils.toRupiah
@@ -41,8 +41,8 @@ import com.project.posapp.utils.toRupiah
 @Composable
 fun CartPanel(
     state: PosUiState,
-    onIncrease: (Product) -> Unit,
-    onDecrease: (Product) -> Unit,
+    onIncrease: (PosProduct) -> Unit,
+    onDecrease: (PosProduct) -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {

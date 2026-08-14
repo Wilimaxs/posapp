@@ -1,14 +1,14 @@
 package com.project.posapp.feature.cashier.pos
 
 import com.project.posapp.model.PosCustomer
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
 
 data class PosUiState(
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
 
-    val products: List<Product> = emptyList(),
+    val products: List<PosProduct> = emptyList(),
     val categories: List<ProductCategory> = emptyList(),
     val cart: Map<Long, CartItem> = emptyMap(),
 
@@ -41,7 +41,7 @@ data class PosUiState(
 }
 
 data class CartItem(
-    val product: Product,
+    val product: PosProduct,
     val quantity: Int
 )
 

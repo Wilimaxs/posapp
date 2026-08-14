@@ -1,6 +1,6 @@
 package com.project.posapp.feature.cashier.pos
 
-import com.project.posapp.model.Product
+import com.project.posapp.model.PosProduct
 
 data class ProductPricing(
     val basePrice: Long,
@@ -10,7 +10,7 @@ data class ProductPricing(
     val hasDiscount: Boolean get() = discountedPrice != null
 }
 
-fun Product.calculatePricing(
+fun PosProduct.calculatePricing(
     customerType: CustomerType,
     quantity: Int = 1
 ): ProductPricing {
