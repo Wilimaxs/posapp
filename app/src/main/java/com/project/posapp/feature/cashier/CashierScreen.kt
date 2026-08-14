@@ -24,12 +24,7 @@ fun CashierScreen() {
 
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentScreen = when (
-        backStackEntry?.destination?.route
-    ) {
-        Screen.TRANSACTION.route -> Screen.TRANSACTION
-        else -> Screen.POS
-    }
+    val currentScreen = Screen.fromRoute(backStackEntry?.destination?.route)
 
     Row(
         modifier = Modifier.fillMaxSize()
@@ -40,9 +35,7 @@ fun CashierScreen() {
                 if (screen != currentScreen) {
                     navController.navigate(screen.route) {
                         launchSingleTop = true
-                        popUpTo(Screen.POS.route) {
-                            saveState = true
-                        }
+                        popUpTo(Screen.POS.route) { saveState = true }
                         restoreState = true
                     }
                 }

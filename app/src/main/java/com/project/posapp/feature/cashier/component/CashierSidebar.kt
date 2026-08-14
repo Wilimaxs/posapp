@@ -25,6 +25,17 @@ import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.route.Screen
 
+private val menuItems = listOf<CashierMenuItem>(
+    CashierMenuItem(
+        screen = Screen.POS,
+        icon = Icons.Outlined.PointOfSale
+    ),
+    CashierMenuItem(
+        screen = Screen.TRANSACTION,
+        icon = Icons.AutoMirrored.Outlined.ReceiptLong
+    )
+)
+
 @Composable
 fun CashierSidebar(
     currentScreen: Screen,
@@ -45,46 +56,32 @@ fun CashierSidebar(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Text(
             text = "TR",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
-
         Spacer(
             modifier = Modifier.size(Spacing.Structural)
         )
-
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            SidebarItem(
-                title = "POS",
-                icon = Icons.Outlined.PointOfSale,
-                selected = currentScreen == Screen.POS,
-                onClick = {
-                    onNavigate(Screen.POS)
-                }
-            )
-
-            SidebarItem(
-                title = "Transaksi",
-                icon = Icons.AutoMirrored.Outlined.ReceiptLong,
-                selected = currentScreen == Screen.TRANSACTION,
-                onClick = {
-                    onNavigate(Screen.TRANSACTION)
-                }
-            )
+            menuItems.forEach { item ->
+                SidebarItem(
+                    title = item.screen.title,
+                    icon = item.icon,
+                    selected = item.screen == currentScreen,
+                    onClick = { onNavigate(item.screen) }
+                )
+            }
         }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Column(
                 modifier = Modifier
                     .size(40.dp)
@@ -99,17 +96,14 @@ fun CashierSidebar(
                     tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
-
             Spacer(
                 modifier = Modifier.size(Spacing.Tight)
             )
-
             Text(
                 text = "Admin",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-
             Text(
                 text = "Kasir Utama",
                 style = MaterialTheme.typography.labelSmall,

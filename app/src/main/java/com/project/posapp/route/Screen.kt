@@ -9,4 +9,11 @@ enum class Screen(
 //    RECEIVABLE("receivable", "Piutang"),
 //    RETURN("return", "Retur"),
 //    SHIFT("shift", "Shift")
+    ;
+
+    companion object {
+        fun fromRoute(route: String?): Screen =
+            entries.firstOrNull { it.route == route } ?: POS
+    }
+
 }
