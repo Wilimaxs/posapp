@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.model.PosCustomer
-import com.project.posapp.repository.PosCustomerRepository
+import com.project.posapp.repository.PosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PosCustomerViewModel @Inject constructor(
-    private val repository: PosCustomerRepository
+    private val repository: PosRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(value = PosCustomerUiState())
