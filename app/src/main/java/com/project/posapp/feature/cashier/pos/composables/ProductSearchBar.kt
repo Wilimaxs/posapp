@@ -21,20 +21,17 @@ fun ProductSearchBar(
     onValueChange: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
-
         leadingIcon = {
             Icon(
                 imageVector = Icons.Outlined.Search,
                 contentDescription = null
             )
         },
-
         trailingIcon = {
             if (value.isNotEmpty()) {
                 IconButton(
@@ -50,21 +47,9 @@ fun ProductSearchBar(
                 }
             }
         },
-
-        placeholder = {
-            Text(
-                text = "Cari nama produk, SKU, atau barcode"
-            )
-        },
-
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done
-        ),
-
-        keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-            }
+        placeholder = { Text(text = "Cari nama produk, SKU, atau barcode") },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }
         )
     )
 }

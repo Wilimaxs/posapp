@@ -22,29 +22,18 @@ fun CategorySelector(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
             .padding(bottom = Spacing.Standard),
-        horizontalArrangement =
-            Arrangement.spacedBy(Spacing.Tight)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.Tight)
     ) {
-
         FilterChip(
             selected = selectedCategoryId == null,
-            onClick = {
-                onCategorySelected(null)
-            },
-            label = {
-                Text("Semua")
-            }
+            onClick = { onCategorySelected(null) },
+            label = { Text("Semua") }
         )
-
         categories.forEach { category ->
             FilterChip(
                 selected = selectedCategoryId == category.id,
-                onClick = {
-                    onCategorySelected(category.id)
-                },
-                label = {
-                    Text(category.name)
-                }
+                onClick = { onCategorySelected(category.id) },
+                label = { Text(category.name) }
             )
         }
     }

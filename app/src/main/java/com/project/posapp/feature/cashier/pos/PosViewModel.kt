@@ -219,6 +219,7 @@ class PosViewModel @Inject constructor(
             it.copy(showCustomerPicker = false)
         }
     }
+
     fun selectMember(customer: PosCustomer) {
         _uiState.update {
             it.copy(

@@ -33,158 +33,68 @@ fun CustomerSelector(
     onChooseMember: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color =
-                    MaterialTheme
-                        .colorScheme
-                        .surface,
-
-                shape =
-                    RoundedCornerShape(
-                        Radius.Medium
-                    )
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(size = Radius.Medium)
             )
             .border(
                 width = 1.dp,
-
-                color =
-                    MaterialTheme
-                        .colorScheme
-                        .outlineVariant,
-
-                shape =
-                    RoundedCornerShape(
-                        Radius.Medium
-                    )
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(size = Radius.Medium)
             )
-            .padding(
-                Spacing.Standard
-            ),
-
-        verticalAlignment =
-            Alignment.CenterVertically
+            .padding(all = Spacing.Standard),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
         Row(
             modifier = Modifier
                 .background(
-                    color =
-                        MaterialTheme
-                            .colorScheme
-                            .surfaceContainerHigh,
-
-                    shape =
-                        RoundedCornerShape(
-                            Radius.Default
-                        )
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = RoundedCornerShape(size = Radius.Default)
                 )
-                .padding(
-                    Spacing.Micro
-                )
+                .padding(all = Spacing.Micro)
         ) {
-
             CustomerTypeItem(
                 text = "Guest",
-
-                selected =
-                    customerType ==
-                            CustomerType.GUEST,
-
-                onClick = {
-                    onCustomerTypeChange(
-                        CustomerType.GUEST
-                    )
-                }
+                selected = customerType == CustomerType.GUEST,
+                onClick = { onCustomerTypeChange(CustomerType.GUEST) }
             )
-
             CustomerTypeItem(
                 text = "Member",
-
-                selected =
-                    customerType ==
-                            CustomerType.MEMBER,
-
-                onClick = {
-                    onCustomerTypeChange(
-                        CustomerType.MEMBER
-                    )
-                }
+                selected = customerType == CustomerType.MEMBER,
+                onClick = { onCustomerTypeChange(CustomerType.MEMBER) }
             )
         }
 
-        if (
-            customerType ==
-            CustomerType.MEMBER
-        ) {
-
+        if (customerType == CustomerType.MEMBER) {
             Box(
                 modifier = Modifier
-                    .padding(
-                        horizontal =
-                            Spacing.Standard
-                    )
+                    .padding(horizontal = Spacing.Standard)
                     .width(1.dp)
                     .height(32.dp)
-                    .background(
-                        MaterialTheme
-                            .colorScheme
-                            .outlineVariant
-                    )
+                    .background(color = MaterialTheme.colorScheme.outlineVariant)
             )
-
             Column(
-                modifier =
-                    Modifier.weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
-
                 Text(
-                    text =
-                        selectedMember
-                            ?.name
-                            ?: "Harap pilih member",
-
-                    style =
-                        MaterialTheme
-                            .typography
-                            .labelLarge,
-
-                    color =
-                        MaterialTheme
-                            .colorScheme
-                            .onSurface
+                    text = selectedMember?.name ?: "Harap pilih member",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
                 Text(
-                    text =
-                        selectedMember
-                            ?.phone
-                            ?: "Belum ada member dipilih",
-
-                    style =
-                        MaterialTheme
-                            .typography
-                            .labelSmall,
-
-                    color =
-                        MaterialTheme
-                            .colorScheme
-                            .onSurfaceVariant
+                    text = selectedMember?.phone ?: "Belum ada member dipilih",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
             OutlinedButton(
-                onClick =
-                    onChooseMember
+                onClick = onChooseMember
             ) {
-
                 Text(
-                    text = if (
-                        selectedMember == null
-                    ) {
+                    text = if (selectedMember == null) {
                         "Pilih member"
                     } else {
                         "Ganti member"
@@ -201,49 +111,24 @@ private fun CustomerTypeItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-
     Text(
         text = text,
-
         modifier = Modifier
-            .clip(
-                RoundedCornerShape(
-                    Radius.Small
-                )
-            )
-            .clickable(
-                onClick = onClick
-            )
+            .clip(shape = RoundedCornerShape(size = Radius.Small))
+            .clickable(onClick = onClick)
             .background(
-                if (selected) {
-                    MaterialTheme
-                        .colorScheme
-                        .surface
+                color = if (selected) {
+                    MaterialTheme.colorScheme.surface
                 } else {
                     Color.Transparent
                 }
             )
-            .padding(
-                horizontal =
-                    Spacing.Standard,
-
-                vertical =
-                    Spacing.Tight
-            ),
-
-        style =
-            MaterialTheme
-                .typography
-                .labelLarge,
-
+            .padding(horizontal = Spacing.Standard, vertical = Spacing.Tight),
+        style = MaterialTheme.typography.labelLarge,
         color = if (selected) {
-            MaterialTheme
-                .colorScheme
-                .primary
+            MaterialTheme.colorScheme.primary
         } else {
-            MaterialTheme
-                .colorScheme
-                .onSurfaceVariant
+            MaterialTheme.colorScheme.onSurfaceVariant
         }
     )
 }

@@ -53,33 +53,21 @@ fun PosScreen(
                 value = state.searchQuery,
                 onValueChange = viewModel::onSearchChange
             )
-
             CategorySelector(
                 categories = state.categories,
                 selectedCategoryId = state.selectedCategoryId,
                 onCategorySelected = viewModel::onCategorySelected
             )
-
             ProductGrid(
-                products = state.products,
-                cart = state.cart,
-                customerType = state.customerType,
-                isLoading = state.isLoading,
-                isLoadingMore = state.isLoadingMore,
-                hasNextPage = state.hasNextPage,
-                errorMessage = state.errorMessage,
+                state = state,
                 onRetry = viewModel::loadProducts,
                 onLoadMore = viewModel::loadNextPage,
                 onProductClick = viewModel::addProduct
             )
         }
-
         CartPanel(
             modifier = Modifier.weight(0.38f),
-            items = state.cartItems,
-            cartCount = state.cartCount,
-            total = state.total,
-            customerType = state.customerType,
+            state = state,
             onIncrease = viewModel::increaseQuantity,
             onDecrease = viewModel::decreaseQuantity,
             onClear = viewModel::clearCart
