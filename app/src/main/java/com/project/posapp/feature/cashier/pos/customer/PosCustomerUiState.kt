@@ -7,9 +7,7 @@ data class PosCustomerUiState(
     val isLoadingMore: Boolean = false,
 
     val customers: List<PosCustomer> = emptyList(),
-
     val searchQuery: String = "",
-
     val selectedCustomer: PosCustomer? = null,
 
     val currentPage: Int = 1,
@@ -17,7 +15,5 @@ data class PosCustomerUiState(
 
     val errorMessage: String? = null
 ) {
-
-    val hasNextPage: Boolean
-        get() = currentPage < lastPage
+    val hasNextPage: Boolean get() = currentPage < lastPage
 }

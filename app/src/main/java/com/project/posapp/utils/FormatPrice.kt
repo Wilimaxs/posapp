@@ -6,9 +6,7 @@ import java.util.Locale
 fun Long.toRupiah(): String {
     return NumberFormat
         .getCurrencyInstance(Locale("id", "ID"))
-        .apply {
-            maximumFractionDigits = 0
-        }
+        .apply { maximumFractionDigits = 0 }
         .format(this)
         .replace("\u00A0", "")
 }

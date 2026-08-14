@@ -19,79 +19,89 @@ class PosCustomerViewModel @Inject constructor(
     private val repository: PosCustomerRepository
 ) : ViewModel() {
 
-    private val _uiState =
-        MutableStateFlow(PosCustomerUiState())
+    private val _uiState = MutableStateFlow(value = PosCustomerUiState())
 
-    val uiState =
-        _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
     private var requestJob: Job? = null
 
-    fun loadCustomers(
-        selectedMember: PosCustomer? = null
+    fun loadCustomers(selectedMember: PosCustomer? = null) {
+        if (selectedMember != null) {
+            _uiState.update {
+                it.copy(
+                    selectedCustomer = it.selectedCustomer ?: selectedMember
+                )
+            }
+        }
+        fetchCustomers(page = 1)
+    }
+
+    fun loadNextPage() {
+        val state = _uiState.value
+        if (state.isLoading || state.isLoadingMore || state.hasNextPage) {
+            return
+        }
+        fetchCustomers(
+            page = state.currentPage + 1,
+            append = true
+        )
+    }
+
+    private fun fetchCustomers(
+        page: Int,
+        append: Boolean = false
     ) {
         requestJob?.cancel()
 
         val state = _uiState.value
 
         requestJob = viewModelScope.launch {
-
             _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    errorMessage = null,
-
-                    selectedCustomer =
-                        it.selectedCustomer
-                            ?: selectedMember
-                )
+                if (append) {
+                    it.copy(isLoadingMore = true)
+                } else {
+                    it.copy(
+                        isLoading = true,
+                        errorMessage = null
+                    )
+                }
             }
 
-            val search = state.searchQuery
-                .trim()
-                .takeIf {
-                    it.isNotEmpty()
-                }
+            val result = repository.getCustomers(
+                page = page,
+                search = state.searchQuery.trim().takeIf(String::isNotEmpty)
+            )
 
-            when (
-                val result = repository.getCustomers(
-                    page = 1,
-                    search = search
-                )
-            ) {
-
+            when (result) {
                 is NetworkResult.Success -> {
-
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { current ->
+                        current.copy(
                             isLoading = false,
-
-                            customers =
-                                result.data,
-
-                            currentPage =
-                                result.meta
-                                    ?.currentPage
-                                    ?: 1,
-
-                            lastPage =
-                                result.meta
-                                    ?.lastPage
-                                    ?: 1,
-
+                            isLoadingMore = false,
+                            customers = if (append) {
+                                (current.customers + result.data)
+                                    .distinctBy(PosCustomer::id)
+                            } else {
+                                result.data
+                            },
+                            currentPage = result.meta?.currentPage ?: page,
+                            lastPage = result.meta?.lastPage ?: current.lastPage,
                             errorMessage = null
                         )
                     }
                 }
 
                 is NetworkResult.Error -> {
-
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage =
+                            isLoadingMore = false,
+                            errorMessage = if (append) {
+                                it.errorMessage
+                            } else {
                                 result.message
+                            }
                         )
                     }
                 }
@@ -99,116 +109,23 @@ class PosCustomerViewModel @Inject constructor(
         }
     }
 
-    fun onSearchChange(
-        query: String
-    ) {
-        _uiState.update {
-            it.copy(
-                searchQuery = query
-            )
-        }
-
+    fun onSearchChange(query: String) {
+        _uiState.update { it.copy(searchQuery = query) }
         searchJob?.cancel()
-
         requestJob?.cancel()
-
         searchJob = viewModelScope.launch {
-            delay(400)
-
+            delay(timeMillis = 400)
             loadCustomers()
         }
     }
 
-    fun selectCustomer(
-        customer: PosCustomer
-    ) {
-        _uiState.update {
-            it.copy(
-                selectedCustomer = customer
-            )
-        }
-    }
-
-    fun loadNextPage() {
-        val state = _uiState.value
-
-        if (
-            state.isLoading ||
-            state.isLoadingMore ||
-            !state.hasNextPage
-        ) {
-            return
-        }
-
-        val nextPage =
-            state.currentPage + 1
-
-        val search = state.searchQuery
-            .trim()
-            .takeIf {
-                it.isNotEmpty()
-            }
-
-        viewModelScope.launch {
-
-            _uiState.update {
-                it.copy(
-                    isLoadingMore = true
-                )
-            }
-
-            when (
-                val result =
-                    repository.getCustomers(
-                        page = nextPage,
-                        search = search
-                    )
-            ) {
-
-                is NetworkResult.Success -> {
-
-                    _uiState.update { current ->
-
-                        current.copy(
-                            isLoadingMore = false,
-
-                            customers = (
-                                    current.customers +
-                                            result.data
-                                    ).distinctBy {
-                                    it.id
-                                },
-
-                            currentPage =
-                                result.meta
-                                    ?.currentPage
-                                    ?: nextPage,
-
-                            lastPage =
-                                result.meta
-                                    ?.lastPage
-                                    ?: current.lastPage
-                        )
-                    }
-                }
-
-                is NetworkResult.Error -> {
-
-                    _uiState.update {
-                        it.copy(
-                            isLoadingMore = false
-                        )
-                    }
-                }
-            }
-        }
+    fun selectCustomer(customer: PosCustomer) {
+        _uiState.update { it.copy(selectedCustomer = customer) }
     }
 
     fun reset() {
         searchJob?.cancel()
         requestJob?.cancel()
-
-        _uiState.value =
-            PosCustomerUiState()
+        _uiState.value = PosCustomerUiState()
     }
 }

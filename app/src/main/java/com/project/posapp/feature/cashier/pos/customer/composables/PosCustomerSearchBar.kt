@@ -21,35 +21,25 @@ fun PosCustomerSearchBar(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val focusManager =
-        LocalFocusManager.current
+    val focusManager = LocalFocusManager.current
 
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-
-        modifier = modifier
-            .fillMaxWidth(),
-
+        modifier = modifier.fillMaxWidth(),
         singleLine = true,
-
         placeholder = {
-            Text(
-                text = "Cari nama atau nomor telepon"
-            )
+            Text(text = "Cari nama atau nomor telepon")
         },
-
         leadingIcon = {
             Icon(
-                imageVector =
-                    Icons.Outlined.Search,
+                imageVector = Icons.Outlined.Search,
                 contentDescription = null
             )
         },
 
         trailingIcon = {
             if (value.isNotEmpty()) {
-
                 IconButton(
                     onClick = {
                         onValueChange("")
@@ -57,26 +47,13 @@ fun PosCustomerSearchBar(
                     }
                 ) {
                     Icon(
-                        imageVector =
-                            Icons.Outlined.Close,
-                        contentDescription =
-                            "Hapus pencarian"
+                        imageVector = Icons.Outlined.Close,
+                        contentDescription = "Hapus pencarian"
                     )
                 }
             }
         },
-
-        keyboardOptions =
-            KeyboardOptions(
-                imeAction =
-                    ImeAction.Done
-            ),
-
-        keyboardActions =
-            KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            )
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
     )
 }
