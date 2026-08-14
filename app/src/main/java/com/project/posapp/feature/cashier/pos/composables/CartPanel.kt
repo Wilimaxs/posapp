@@ -32,7 +32,7 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.CartItem
 import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.feature.cashier.pos.PosUiState
-import com.project.posapp.feature.cashier.pos.pricing.pricing
+import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.Product
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.composable.EmptyState
@@ -155,7 +155,7 @@ private fun CartItemCard(
     onDecrease: () -> Unit
 ) {
     val product = item.product
-    val pricing = product.pricing(
+    val pricing = product.calculatePricing(
         customerType = customerType,
         quantity = item.quantity
     )

@@ -1,6 +1,5 @@
 package com.project.posapp.feature.cashier.pos
 
-import com.project.posapp.feature.cashier.pos.pricing.pricing
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.Product
 import com.project.posapp.model.ProductCategory
@@ -32,7 +31,7 @@ data class PosUiState(
 
     val total: Long
         get() = cart.values.sumOf {
-            it.product.pricing(
+            it.product.calculatePricing(
                 customerType = customerType,
                 quantity = it.quantity
             ).total

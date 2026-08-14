@@ -42,7 +42,7 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.core.theme.Warning
 import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.feature.cashier.pos.PosUiState
-import com.project.posapp.feature.cashier.pos.pricing.pricing
+import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.Product
 import com.project.posapp.ui.theme.Radius
 import com.project.posapp.utils.composable.EmptyState
@@ -148,7 +148,7 @@ private fun ProductCard(
 ) {
     val isOutOfStock = product.stock <= 0
     val isLowStock = product.stock in 1..product.minimumStock
-    val pricing = product.pricing(customerType)
+    val pricing = product.calculatePricing(customerType)
 
     Column(
         modifier = Modifier
