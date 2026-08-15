@@ -76,18 +76,40 @@ class PosPreviewViewModel @Inject constructor(
     fun selectedPaymentMethode(
         method: PosPaymentMethod
     ) {
-        if (method == _uiState.value.paymentMethod){
+        if (method == _uiState.value.paymentMethod) {
             _uiState.update {
                 it.copy(
                     paymentMethod = null
                 )
             }
-        }else {
+        } else {
             _uiState.update {
                 it.copy(
                     paymentMethod = method
                 )
             }
+        }
+    }
+
+    fun onDownPaymentChange(
+        value: String
+    ) {
+        val amount = value.filter(predicate = Char::isDigit).take(n = 15)
+
+        _uiState.update {
+            it.copy(
+                downPayment = amount
+            )
+        }
+    }
+
+    fun onDueDateChange(
+        value: String
+    ) {
+        _uiState.update {
+            it.copy(
+                dueDate = value
+            )
         }
     }
 

@@ -109,6 +109,8 @@ fun PosScreen(
             },
             onSchemeSelected = previewViewModel::selectedPaymentSchema,
             onMethodSelected = previewViewModel::selectedPaymentMethode,
+            onDownPaymentChange = previewViewModel::onDownPaymentChange,
+            onDueDateChange = previewViewModel::onDueDateChange,
             onContinue = { saleId, scheme, method ->
                 // Payment kita implementasikan setelah preview selesai.
             }

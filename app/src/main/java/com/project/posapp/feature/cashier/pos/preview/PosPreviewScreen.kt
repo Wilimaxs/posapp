@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.project.posapp.core.theme.Spacing
+import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentOptions
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
@@ -41,6 +42,8 @@ fun PosPreviewScreen(
     onRetry: () -> Unit,
     onSchemeSelected: (PosPaymentScheme) -> Unit,
     onMethodSelected: (PosPaymentMethod) -> Unit,
+    onDownPaymentChange: (String) -> Unit,
+    onDueDateChange: (String) -> Unit,
     onContinue: (
         saleId: Long,
         scheme: PosPaymentScheme,
@@ -116,6 +119,16 @@ fun PosPreviewScreen(
                                 onSchemeSelected = onSchemeSelected,
                             )
                             PosPreviewTransactionDetail(preview = preview)
+                            if (state.paymentSchema == PosPaymentScheme.PARTIAL) {
+                                PosPreviewPartialDetail(
+                                    total = preview.totalAfterDiscount ?: 0L,
+                                    downPayment = state.downPayment,
+                                    dueDate = state.dueDate,
+                                    remainingReceivable = state.remainingReceivable,
+                                    onDownPaymentChange = onDownPaymentChange,
+                                    onDueDateChange = onDueDateChange
+                                )
+                            }
                             PosPreviewPaymentMethode(
                                 selectedMethod = state.paymentMethod,
                                 onMethodSelected = onMethodSelected
@@ -129,9 +142,7 @@ fun PosPreviewScreen(
                             onDismiss = onDismiss,
                             onContinue = {
                                 val saleId = preview.saleId ?: return@PreviewFooter
-
                                 val method = state.paymentMethod ?: return@PreviewFooter
-
                                 onContinue(
                                     saleId,
                                     state.paymentSchema,
