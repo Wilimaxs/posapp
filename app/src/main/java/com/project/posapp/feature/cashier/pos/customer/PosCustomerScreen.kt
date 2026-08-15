@@ -65,7 +65,7 @@ fun PosCustomerScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(fraction = 0.85f)
+                    .fillMaxWidth(fraction = 0.5f)
                     .widthIn(max = 680.dp)
                     .heightIn(max = 720.dp)
                     .background(
