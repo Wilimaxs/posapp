@@ -258,4 +258,14 @@ class PosViewModel @Inject constructor(
             it.copy(cart = emptyMap())
         }
     }
+
+    fun finishPayment() {
+        _uiState.update {
+            it.copy(
+                cart = emptyMap(),
+                showPaymentPreview = false
+            )
+        }
+        loadProducts()
+    }
 }

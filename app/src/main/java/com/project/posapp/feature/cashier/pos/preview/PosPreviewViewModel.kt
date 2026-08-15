@@ -169,4 +169,55 @@ class PosPreviewViewModel @Inject constructor(
             }
         }
     }
+
+    fun payment(
+        onError: () -> Unit
+    ) {
+        val state = _uiState.value
+        val saleId = state.preview?.saleId ?: return
+        val paymentMethod = state.paymentMethod ?: return
+        if (state.isPaymentLoading) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isPaymentLoading = true
+                )
+            }
+
+            when (
+                val result = repository.createPayment(
+                    saleId = saleId,
+                    paymentAmount = state.paymentRequestAmount,
+                    paymentMethod = paymentMethod.value,
+                    dueDate = if (state.paymentSchema == PosPaymentScheme.PARTIAL) {
+                        state.dueDate
+                    } else {
+                        null
+                    }
+                )
+            ) {
+                is NetworkResult.Success -> {
+                    countdownJob?.cancel()
+                    _uiState.update {
+                        it.copy(
+                            isPaymentLoading = false,
+                            payment = result.data
+                        )
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isPaymentLoading = false
+                        )
+                    }
+                    onError()
+                }
+            }
+        }
+    }
 }

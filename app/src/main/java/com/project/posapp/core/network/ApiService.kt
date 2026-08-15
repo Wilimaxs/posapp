@@ -3,6 +3,7 @@ package com.project.posapp.core.network
 import com.project.posapp.model.ApiResponse
 import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.model.PosCustomer
+import com.project.posapp.model.PosPayment
 import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
 import retrofit2.Response
@@ -34,4 +35,9 @@ interface ApiService {
     suspend fun checkoutPreview(
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Response<ApiResponse<PosCheckoutPreview>>
+
+    @POST(value = "v1/payments")
+    suspend fun createPayment(
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<ApiResponse<PosPayment>>
 }

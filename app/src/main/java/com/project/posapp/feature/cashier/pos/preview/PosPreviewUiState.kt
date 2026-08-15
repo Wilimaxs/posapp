@@ -1,6 +1,7 @@
 package com.project.posapp.feature.cashier.pos.preview
 
 import com.project.posapp.model.PosCheckoutPreview
+import com.project.posapp.model.PosPayment
 
 data class PosPreviewUiState(
     val isLoading: Boolean = false,
@@ -15,6 +16,9 @@ data class PosPreviewUiState(
 
     val cashReceived: String = "",
 
+    val isPaymentLoading: Boolean = false,
+    val payment: PosPayment? = null,
+
     val errorMessage: String? = null
 ) {
     val downPaymentAmount: Long get() = downPayment.toLongOrNull() ?: 0L
@@ -25,6 +29,12 @@ data class PosPreviewUiState(
         get() = when (paymentSchema) {
             PosPaymentScheme.FULL -> preview?.totalAfterDiscount ?: 0L
             PosPaymentScheme.PARTIAL -> downPaymentAmount
+        }
+    val paymentRequestAmount: Long
+        get() = when {
+            paymentSchema == PosPaymentScheme.PARTIAL -> downPaymentAmount
+            paymentMethod == PosPaymentMethod.CASH -> cashReceivedAmount
+            else -> paymentAmount
         }
     val canContinue: Boolean
         get() {
@@ -55,7 +65,9 @@ enum class PosPaymentScheme {
     PARTIAL
 }
 
-enum class PosPaymentMethod {
-    CASH,
-    QR
+enum class PosPaymentMethod(
+    val value: String
+) {
+    CASH("cash"),
+    QR("qr")
 }

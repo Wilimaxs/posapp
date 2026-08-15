@@ -30,6 +30,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.project.posapp.core.theme.Spacing
+import com.project.posapp.feature.cashier.pos.preview.composables.PosPaymentSuccess
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewCashPayment
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
@@ -45,6 +46,7 @@ fun PosPreviewScreen(
     customerId: Long?,
     items: Map<Long, Int>,
     onDismiss: () -> Unit,
+    onPaymentFinished: () -> Unit,
     viewModel: PosPreviewViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -92,6 +94,24 @@ fun PosPreviewScreen(
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                 when {
+
+                    state.isPaymentLoading -> {
+                        LoadingState(
+                            text = "Memproses pembayaran..."
+                        )
+                    }
+
+                    state.payment != null -> {
+                        val payment = requireNotNull(state.payment)
+                        PosPaymentSuccess(
+                            payment = payment,
+                            onFinish = {
+                                viewModel.dismiss()
+                                onPaymentFinished()
+                            }
+                        )
+                    }
+
                     state.isLoading -> {
                         LoadingState(text = "Menyiapkan rincian pembayaran...")
                     }
@@ -167,7 +187,14 @@ fun PosPreviewScreen(
                                 viewModel.dismiss()
                                 onDismiss()
                             },
-                            onContinue = {}
+                            onContinue = {
+                                viewModel.payment(
+                                    onError = {
+                                        viewModel.dismiss()
+                                        onDismiss()
+                                    }
+                                )
+                            }
                         )
                     }
                 }

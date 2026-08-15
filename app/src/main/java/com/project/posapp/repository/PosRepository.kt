@@ -5,6 +5,7 @@ import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.core.network.apiSafeCall
 import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.model.PosCustomer
+import com.project.posapp.model.PosPayment
 import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
 import javax.inject.Inject
@@ -65,6 +66,24 @@ class PosRepository @Inject constructor(
         }
         return apiSafeCall {
             apiService.checkoutPreview(body)
+        }
+    }
+
+    suspend fun createPayment(
+        saleId: Long,
+        paymentAmount: Long,
+        paymentMethod: String,
+        dueDate: String?
+    ): NetworkResult<PosPayment> {
+        val body = buildMap<String, Any?> {
+            put("sale_id", saleId)
+            put("payment_amount", paymentAmount)
+            put("payment_method", paymentMethod)
+            put("due_date", dueDate)
+        }
+
+        return apiSafeCall {
+            apiService.createPayment(body)
         }
     }
 }

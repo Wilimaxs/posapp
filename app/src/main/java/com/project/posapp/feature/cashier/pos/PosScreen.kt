@@ -89,7 +89,9 @@ fun PosScreen(
         PosPreviewScreen(
             customerId = state.selectedMember?.id,
             items = state.cart.mapValues { it.value.quantity },
-            onDismiss = viewModel::hidePaymentPreview
+            onDismiss = viewModel::hidePaymentPreview,
+            onPaymentFinished =
+                viewModel::finishPayment
         )
     }
 }
