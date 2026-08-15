@@ -73,19 +73,30 @@ class PosPreviewViewModel @Inject constructor(
         }
     }
 
+    fun onCashReceivedChange(
+        value: String
+    ) {
+        val amount = value.filter(Char::isDigit).take(15)
+        _uiState.update {
+            it.copy(
+                cashReceived = amount
+            )
+        }
+    }
+
     fun selectedPaymentMethode(
         method: PosPaymentMethod
     ) {
-        if (method == _uiState.value.paymentMethod) {
-            _uiState.update {
-                it.copy(
-                    paymentMethod = null
+        _uiState.update { state ->
+            if (method == state.paymentMethod) {
+                state.copy(
+                    paymentMethod = null,
+                    cashReceived = ""
                 )
-            }
-        } else {
-            _uiState.update {
-                it.copy(
-                    paymentMethod = method
+            } else {
+                state.copy(
+                    paymentMethod = method,
+                    cashReceived = ""
                 )
             }
         }

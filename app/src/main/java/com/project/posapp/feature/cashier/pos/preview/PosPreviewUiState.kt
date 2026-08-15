@@ -13,17 +13,33 @@ data class PosPreviewUiState(
     val downPayment: String = "",
     val dueDate: String? = null,
 
+    val cashReceived: String = "",
+
     val errorMessage: String? = null
 ) {
     val downPaymentAmount: Long get() = downPayment.toLongOrNull() ?: 0L
     val remainingReceivable: Long
         get() = ((preview?.totalAfterDiscount ?: 0L) - downPaymentAmount).coerceAtLeast(0L)
+    val cashReceivedAmount: Long get() = cashReceived.toLongOrNull() ?: 0L
+    val paymentAmount: Long
+        get() = when (paymentSchema) {
+            PosPaymentScheme.FULL -> preview?.totalAfterDiscount ?: 0L
+            PosPaymentScheme.PARTIAL -> downPaymentAmount
+        }
+
     val canContinue: Boolean
         get() {
-            if (preview?.saleId == null || paymentMethod == null) {
+            if (preview?.saleId == null || paymentMethod == null
+            ) {
                 return false
             }
-            return paymentSchema != PosPaymentScheme.PARTIAL || (downPaymentAmount > 0L && !dueDate.isNullOrBlank())
+            if (paymentSchema == PosPaymentScheme.PARTIAL && (downPaymentAmount <= 0L || dueDate.isNullOrBlank())) {
+                return false
+            }
+            return when (paymentMethod) {
+                PosPaymentMethod.CASH -> cashReceivedAmount >= paymentAmount
+                PosPaymentMethod.QR -> true
+            }
         }
     val countdownText: String
         get() {

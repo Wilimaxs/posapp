@@ -30,6 +30,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.project.posapp.core.theme.Spacing
+import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewCashPayment
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentSchema
@@ -149,6 +150,16 @@ fun PosPreviewScreen(
                                 selectedMethod = state.paymentMethod,
                                 onMethodSelected = viewModel::selectedPaymentMethode
                             )
+                            if (
+                                state.paymentMethod ==
+                                PosPaymentMethod.CASH
+                            ) {
+                                PosPreviewCashPayment(
+                                    paymentAmount = state.paymentAmount,
+                                    cashReceived = state.cashReceived,
+                                    onCashReceivedChange = viewModel::onCashReceivedChange
+                                )
+                            }
                         }
 
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
