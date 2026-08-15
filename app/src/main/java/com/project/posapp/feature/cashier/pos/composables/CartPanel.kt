@@ -44,6 +44,8 @@ fun CartPanel(
     onIncrease: (PosProduct) -> Unit,
     onDecrease: (PosProduct) -> Unit,
     onClear: () -> Unit,
+    onPay: () -> Unit,
+    isPayLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -122,15 +124,17 @@ fun CartPanel(
 
             Button(
                 enabled = state.cartItems.isNotEmpty(),
-                onClick = {
-                    // Belum ada proses pembayaran.
-                },
+                onClick = onPay,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = Spacing.Standard)
             ) {
                 Text(
-                    text = "Bayar ${state.total.toRupiah()}"
+                    text = if (isPayLoading) {
+                        "Menyiapkan pembayaran..."
+                    } else {
+                        "Bayar ${state.total.toRupiah()}"
+                    }
                 )
             }
 

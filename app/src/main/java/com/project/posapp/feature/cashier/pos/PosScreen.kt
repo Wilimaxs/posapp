@@ -23,12 +23,16 @@ import com.project.posapp.feature.cashier.pos.composables.CustomerSelector
 import com.project.posapp.feature.cashier.pos.composables.ProductGrid
 import com.project.posapp.feature.cashier.pos.composables.ProductSearchBar
 import com.project.posapp.feature.cashier.pos.customer.PosCustomerScreen
+import com.project.posapp.feature.cashier.pos.preview.PosPreviewScreen
+import com.project.posapp.feature.cashier.pos.preview.PosPreviewViewModel
 
 @Composable
 fun PosScreen(
-    viewModel: PosViewModel = hiltViewModel()
+    viewModel: PosViewModel = hiltViewModel(),
+    previewViewModel: PosPreviewViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val previewState by previewViewModel.uiState.collectAsState()
 
     Row(
         modifier = Modifier
@@ -70,7 +74,16 @@ fun PosScreen(
             state = state,
             onIncrease = viewModel::increaseQuantity,
             onDecrease = viewModel::decreaseQuantity,
-            onClear = viewModel::clearCart
+            onClear = viewModel::clearCart,
+            isPayLoading = previewState.isLoading,
+            onPay = {
+                previewViewModel.loadPreview(
+                    customerId = state.selectedMember?.id,
+                    items = state.cart.mapValues {
+                        it.value.quantity
+                    }
+                )
+            }
         )
     }
 
@@ -79,6 +92,26 @@ fun PosScreen(
             currentMember = state.selectedMember,
             onDismiss = viewModel::hideCustomerPicker,
             onConfirm = viewModel::selectMember,
+        )
+    }
+
+    if (previewState.isVisible) {
+        PosPreviewScreen(
+            state = previewState,
+            onDismiss = previewViewModel::dismiss,
+            onRetry = {
+                previewViewModel.loadPreview(
+                    customerId = state.selectedMember?.id,
+                    items = state.cart.mapValues {
+                        it.value.quantity
+                    }
+                )
+            },
+            onSchemeSelected = previewViewModel::selectedPaymentSchema,
+            onMethodSelected = previewViewModel::selectedPaymentMethode,
+            onContinue = { saleId, scheme, method ->
+                // Payment kita implementasikan setelah preview selesai.
+            }
         )
     }
 }

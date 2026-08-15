@@ -3,6 +3,7 @@ package com.project.posapp.repository
 import com.project.posapp.core.network.ApiService
 import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.core.network.apiSafeCall
+import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
@@ -43,6 +44,27 @@ class PosRepository @Inject constructor(
                 page = page,
                 search = search
             )
+        }
+    }
+
+    suspend fun checkoutPreview(
+        customerId: Long?,
+        items: Map<Long, Int>
+    ): NetworkResult<PosCheckoutPreview> {
+        val body = buildMap {
+            customerId?.let { put("customer_id", it) }
+            put(
+                "items",
+                items.map { (productId, quantity) ->
+                    mapOf(
+                        "product_id" to productId,
+                        "quantity" to quantity
+                    )
+                }
+            )
+        }
+        return apiSafeCall {
+            apiService.checkoutPreview(body)
         }
     }
 }
