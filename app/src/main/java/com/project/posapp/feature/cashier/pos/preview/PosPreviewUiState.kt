@@ -18,7 +18,13 @@ data class PosPreviewUiState(
     val downPaymentAmount: Long get() = downPayment.toLongOrNull() ?: 0L
     val remainingReceivable: Long
         get() = ((preview?.totalAfterDiscount ?: 0L) - downPaymentAmount).coerceAtLeast(0L)
-    val canContinue: Boolean get() = preview?.saleId != null && paymentMethod != null
+    val canContinue: Boolean
+        get() {
+            if (preview?.saleId == null || paymentMethod == null) {
+                return false
+            }
+            return paymentSchema != PosPaymentScheme.PARTIAL || (downPaymentAmount > 0L && !dueDate.isNullOrBlank())
+        }
     val countdownText: String
         get() {
             val totalSeconds = remainingSeconds ?: return "--:--"

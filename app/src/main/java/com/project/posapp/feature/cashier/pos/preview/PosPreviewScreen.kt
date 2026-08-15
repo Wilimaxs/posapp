@@ -155,7 +155,10 @@ fun PosPreviewScreen(
 
                         PreviewFooter(
                             enabled = state.canContinue,
-                            onDismiss = onDismiss,
+                            onDismiss = {
+                                viewModel.dismiss()
+                                onDismiss()
+                            },
                             onContinue = {}
                         )
                     }
