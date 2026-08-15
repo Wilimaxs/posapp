@@ -62,7 +62,7 @@ fun CashierScreen() {
                     PosScreen()
                 }
 
-                composable(Screen.TRANSACTION.route) {
+                composable(Screen.HISTORY.route) {
                     TransactionScreen()
                 }
             }

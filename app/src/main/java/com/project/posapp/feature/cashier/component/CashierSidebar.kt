@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.HistoryEdu
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PointOfSale
 import androidx.compose.material3.Icon
@@ -25,14 +25,14 @@ import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.route.Screen
 
-private val menuItems = listOf<CashierMenuItem>(
+private val menuItems = listOf(
     CashierMenuItem(
         screen = Screen.POS,
         icon = Icons.Outlined.PointOfSale
     ),
     CashierMenuItem(
-        screen = Screen.TRANSACTION,
-        icon = Icons.AutoMirrored.Outlined.ReceiptLong
+        screen = Screen.HISTORY,
+        icon = Icons.Outlined.HistoryEdu
     )
 )
 
@@ -71,7 +71,7 @@ fun CashierSidebar(
         ) {
             menuItems.forEach { item ->
                 SidebarItem(
-                    title = item.screen.title,
+                    title = item.screen.route,
                     icon = item.icon,
                     selected = item.screen == currentScreen,
                     onClick = { onNavigate(item.screen) }
