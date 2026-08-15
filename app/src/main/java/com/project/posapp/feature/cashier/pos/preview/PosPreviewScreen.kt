@@ -20,15 +20,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
-import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentOptions
+import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentSchema
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTransactionDetail
 import com.project.posapp.ui.theme.Radius
@@ -37,21 +41,25 @@ import com.project.posapp.utils.composable.LoadingState
 
 @Composable
 fun PosPreviewScreen(
-    state: PosPreviewUiState,
+    customerId: Long?,
+    items: Map<Long, Int>,
     onDismiss: () -> Unit,
-    onRetry: () -> Unit,
-    onSchemeSelected: (PosPaymentScheme) -> Unit,
-    onMethodSelected: (PosPaymentMethod) -> Unit,
-    onDownPaymentChange: (String) -> Unit,
-    onDueDateChange: (String) -> Unit,
-    onContinue: (
-        saleId: Long,
-        scheme: PosPaymentScheme,
-        method: PosPaymentMethod
-    ) -> Unit
+    viewModel: PosPreviewViewModel = hiltViewModel()
 ) {
+    val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.loadPreview(
+            customerId = customerId,
+            items = items
+        )
+    }
+
     Dialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            viewModel.dismiss()
+            onDismiss()
+        },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Box(
@@ -91,13 +99,21 @@ fun PosPreviewScreen(
                         ErrorState(
                             title = "Gagal menyiapkan pembayaran",
                             message = state.errorMessage,
-                            onRetry = onRetry,
-                            onDismiss = onDismiss
+                            onRetry = {
+                                viewModel.loadPreview(
+                                    customerId = customerId,
+                                    items = items
+                                )
+                            },
+                            onDismiss = {
+                                viewModel.dismiss()
+                                onDismiss()
+                            }
                         )
                     }
 
                     state.preview != null -> {
-                        val preview = state.preview
+                        val preview = requireNotNull(state.preview)
 
                         Column(
                             modifier = Modifier
@@ -110,13 +126,13 @@ fun PosPreviewScreen(
                                 preview = preview,
                                 countdownText = state.countdownText
                             )
-                            PosPreviewPaymentOptions(
+                            PosPreviewPaymentSchema(
                                 isMember = preview.customerType.equals(
                                     other = "member",
                                     ignoreCase = true
                                 ),
                                 selectedScheme = state.paymentSchema,
-                                onSchemeSelected = onSchemeSelected,
+                                onSchemeSelected = viewModel::selectedPaymentSchema
                             )
                             PosPreviewTransactionDetail(preview = preview)
                             if (state.paymentSchema == PosPaymentScheme.PARTIAL) {
@@ -125,13 +141,13 @@ fun PosPreviewScreen(
                                     downPayment = state.downPayment,
                                     dueDate = state.dueDate,
                                     remainingReceivable = state.remainingReceivable,
-                                    onDownPaymentChange = onDownPaymentChange,
-                                    onDueDateChange = onDueDateChange
+                                    onDownPaymentChange = viewModel::onDownPaymentChange,
+                                    onDueDateChange = viewModel::onDueDateChange
                                 )
                             }
                             PosPreviewPaymentMethode(
                                 selectedMethod = state.paymentMethod,
-                                onMethodSelected = onMethodSelected
+                                onMethodSelected = viewModel::selectedPaymentMethode
                             )
                         }
 
@@ -140,15 +156,7 @@ fun PosPreviewScreen(
                         PreviewFooter(
                             enabled = state.canContinue,
                             onDismiss = onDismiss,
-                            onContinue = {
-                                val saleId = preview.saleId ?: return@PreviewFooter
-                                val method = state.paymentMethod ?: return@PreviewFooter
-                                onContinue(
-                                    saleId,
-                                    state.paymentSchema,
-                                    method
-                                )
-                            }
+                            onContinue = {}
                         )
                     }
                 }

@@ -21,7 +21,7 @@ import com.project.posapp.feature.cashier.pos.preview.PosPaymentScheme
 import com.project.posapp.ui.theme.Radius
 
 @Composable
-fun PosPreviewPaymentOptions(
+fun PosPreviewPaymentSchema(
     isMember: Boolean,
     selectedScheme: PosPaymentScheme,
     onSchemeSelected: (PosPaymentScheme) -> Unit,

@@ -220,6 +220,26 @@ class PosViewModel @Inject constructor(
         }
     }
 
+    fun showPaymentPreview() {
+        if (_uiState.value.cart.isEmpty()) {
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                showPaymentPreview = true
+            )
+        }
+    }
+
+    fun hidePaymentPreview() {
+        _uiState.update {
+            it.copy(
+                showPaymentPreview = false
+            )
+        }
+    }
+
     fun selectMember(customer: PosCustomer) {
         _uiState.update {
             it.copy(

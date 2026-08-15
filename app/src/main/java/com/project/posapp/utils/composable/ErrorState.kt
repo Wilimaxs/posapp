@@ -29,7 +29,7 @@ import com.project.posapp.core.theme.Spacing
 fun ErrorState(
     modifier: Modifier = Modifier,
     title: String,
-    message: String,
+    message: String?,
     onRetry: () -> Unit,
     onDismiss: (() -> Unit)? = null,
 ) {
@@ -69,7 +69,7 @@ fun ErrorState(
         )
 
         Text(
-            text = message,
+            text = message?: "Terjadi kesalahan saat memuat data",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center

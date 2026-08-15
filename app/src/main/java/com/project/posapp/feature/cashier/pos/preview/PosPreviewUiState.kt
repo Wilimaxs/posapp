@@ -15,7 +15,6 @@ data class PosPreviewUiState(
 
     val errorMessage: String? = null
 ) {
-    val isVisible: Boolean get() = isLoading || preview != null || errorMessage != null
     val downPaymentAmount: Long get() = downPayment.toLongOrNull() ?: 0L
     val remainingReceivable: Long
         get() = ((preview?.totalAfterDiscount ?: 0L) - downPaymentAmount).coerceAtLeast(0L)
