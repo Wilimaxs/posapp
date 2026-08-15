@@ -88,7 +88,8 @@ fun PosPreviewScreen(
                         ErrorState(
                             title = "Gagal menyiapkan pembayaran",
                             message = state.errorMessage,
-                            onRetry = onRetry
+                            onRetry = onRetry,
+                            onDismiss = onDismiss
                         )
                     }
 

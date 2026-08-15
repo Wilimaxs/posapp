@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -15,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,10 +27,11 @@ import com.project.posapp.core.theme.Spacing
 
 @Composable
 fun ErrorState(
+    modifier: Modifier = Modifier,
     title: String,
     message: String,
     onRetry: () -> Unit,
-    modifier: Modifier = Modifier
+    onDismiss: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -76,13 +79,22 @@ fun ErrorState(
             modifier = Modifier.height(Spacing.Large)
         )
 
-        Button(
-            onClick = onRetry
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Tight)
         ) {
-            Text(
-                text = "Coba lagi",
-                style = MaterialTheme.typography.labelLarge
-            )
+            onDismiss?.let {
+                TextButton(
+                    onClick = it
+                ) {
+                    Text("Tutup")
+                }
+            }
+
+            Button(
+                onClick = onRetry
+            ) {
+                Text("Coba lagi")
+            }
         }
     }
 }

@@ -123,7 +123,7 @@ fun CartPanel(
             }
 
             Button(
-                enabled = state.cartItems.isNotEmpty(),
+                enabled = state.cartItems.isNotEmpty() && !isPayLoading,
                 onClick = onPay,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -140,7 +140,7 @@ fun CartPanel(
 
             OutlinedButton(
                 onClick = onClear,
-                enabled = state.cartItems.isNotEmpty(),
+                enabled = state.cartItems.isNotEmpty() && !isPayLoading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = Spacing.Tight)
