@@ -26,16 +26,16 @@ data class PosPreviewUiState(
             PosPaymentScheme.FULL -> preview?.totalAfterDiscount ?: 0L
             PosPaymentScheme.PARTIAL -> downPaymentAmount
         }
-
     val canContinue: Boolean
         get() {
-            if (preview?.saleId == null || paymentMethod == null
-            ) {
+            if (preview?.saleId == null || paymentMethod == null) {
                 return false
             }
-            if (paymentSchema == PosPaymentScheme.PARTIAL && (downPaymentAmount <= 0L || dueDate.isNullOrBlank())) {
-                return false
+
+            if (paymentSchema == PosPaymentScheme.PARTIAL) {
+                return downPaymentAmount > 0L && !dueDate.isNullOrBlank()
             }
+
             return when (paymentMethod) {
                 PosPaymentMethod.CASH -> cashReceivedAmount >= paymentAmount
                 PosPaymentMethod.QR -> true

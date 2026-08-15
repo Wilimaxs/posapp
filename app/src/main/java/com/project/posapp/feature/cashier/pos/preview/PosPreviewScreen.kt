@@ -150,10 +150,7 @@ fun PosPreviewScreen(
                                 selectedMethod = state.paymentMethod,
                                 onMethodSelected = viewModel::selectedPaymentMethode
                             )
-                            if (
-                                state.paymentMethod ==
-                                PosPaymentMethod.CASH
-                            ) {
+                            if (state.paymentSchema == PosPaymentScheme.FULL && state.paymentMethod == PosPaymentMethod.CASH) {
                                 PosPreviewCashPayment(
                                     paymentAmount = state.paymentAmount,
                                     cashReceived = state.cashReceived,

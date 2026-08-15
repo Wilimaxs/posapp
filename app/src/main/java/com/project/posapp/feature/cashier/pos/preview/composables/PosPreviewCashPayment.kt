@@ -194,23 +194,15 @@ private fun cashSuggestions(
     if (paymentAmount <= 0L) {
         return emptyList()
     }
-
-    val first = paymentAmount.roundUp(
-        denomination = 10_000L
-    )
-
-    val second = paymentAmount.roundUp(
-        denomination = 50_000L
-    ).let {
+    val first = paymentAmount.roundUp(denomination = 10_000L)
+    val second = paymentAmount.roundUp(denomination = 50_000L).let {
         if (it <= first) {
             first + 50_000L
         } else {
             it
         }
     }
-
     val third = second + 50_000L
-
     return listOf(
         first,
         second,
@@ -221,10 +213,7 @@ private fun cashSuggestions(
 private fun Long.roundUp(
     denomination: Long
 ): Long {
-    return (
-            (this + denomination - 1) /
-                    denomination
-            ) * denomination
+    return ((this + denomination - 1) / denomination) * denomination
 }
 
 private fun String.formatAmount(): String {
@@ -234,11 +223,6 @@ private fun String.formatAmount(): String {
 
     return toLongOrNull()
         ?.let {
-            NumberFormat
-                .getNumberInstance(
-                    Locale.forLanguageTag("id-ID")
-                )
-                .format(it)
-        }
-        ?: ""
+            NumberFormat.getNumberInstance(Locale.forLanguageTag("id-ID")).format(it)
+        } ?: ""
 }
