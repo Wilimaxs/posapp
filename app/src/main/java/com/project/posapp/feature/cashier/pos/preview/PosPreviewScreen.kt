@@ -14,13 +14,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +31,8 @@ import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaym
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTransactionDetail
 import com.project.posapp.ui.theme.Radius
+import com.project.posapp.utils.composable.ErrorState
+import com.project.posapp.utils.composable.LoadingState
 
 @Composable
 fun PosPreviewScreen(
@@ -78,19 +75,19 @@ fun PosPreviewScreen(
                         shape = RoundedCornerShape(size = Radius.Medium)
                     )
             ) {
-                PreviewHeader(onDismiss = onDismiss)
+                PreviewHeader()
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                 when {
                     state.isLoading -> {
-                        LoadingContent()
+                        LoadingState(text = "Menyiapkan rincian pembayaran...")
                     }
 
                     state.errorMessage != null -> {
-                        ErrorContent(
+                        ErrorState(
+                            title = "Gagal menyiapkan pembayaran",
                             message = state.errorMessage,
-                            onDismiss = onDismiss,
                             onRetry = onRetry
                         )
                     }
@@ -149,9 +146,7 @@ fun PosPreviewScreen(
 }
 
 @Composable
-private fun PreviewHeader(
-    onDismiss: () -> Unit
-) {
+private fun PreviewHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -176,76 +171,6 @@ private fun PreviewHeader(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        IconButton(
-            onClick = onDismiss
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                contentDescription = "Tutup"
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoadingContent() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = Spacing.ExtraLarge),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
-        ) {
-            CircularProgressIndicator()
-            Text(
-                text = "Menyiapkan rincian pembayaran...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-
-@Composable
-private fun ErrorContent(
-    message: String,
-    onDismiss: () -> Unit,
-    onRetry: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(all = Spacing.Large),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
-    ) {
-        Text(
-            text = "Gagal menyiapkan pembayaran",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacing.Tight)
-        ) {
-            TextButton(onClick = onDismiss) {
-                Text(text = "Tutup")
-            }
-
-            Button(
-                onClick = onRetry
-            ) {
-                Text(text = "Coba lagi")
-            }
-        }
     }
 }
 
@@ -268,7 +193,6 @@ private fun PreviewFooter(
         TextButton(onClick = onDismiss) {
             Text(text = "Batal")
         }
-
         Button(
             enabled = enabled,
             onClick = onContinue
