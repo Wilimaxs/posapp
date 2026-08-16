@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.toRupiah
 import java.text.NumberFormat
 import java.time.LocalDate

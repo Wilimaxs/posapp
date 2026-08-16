@@ -22,7 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 
 @Composable
 fun PrimaryButton(

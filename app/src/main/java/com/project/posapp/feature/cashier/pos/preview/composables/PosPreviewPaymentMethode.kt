@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.preview.PosPaymentMethod
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 
 @Composable
 fun PosPreviewPaymentMethode(

@@ -38,7 +38,7 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.customer.composables.PosCustomerList
 import com.project.posapp.feature.cashier.pos.customer.composables.PosCustomerSearchBar
 import com.project.posapp.model.PosCustomer
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 
 @Composable
 fun PosCustomerScreen(

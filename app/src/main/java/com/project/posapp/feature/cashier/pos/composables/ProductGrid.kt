@@ -44,9 +44,9 @@ import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.feature.cashier.pos.PosUiState
 import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.PosProduct
-import com.project.posapp.ui.theme.Radius
-import com.project.posapp.utils.composable.EmptyState
-import com.project.posapp.utils.composable.ErrorState
+import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.AppState
+import com.project.posapp.utils.composable.AppStateType
 import com.project.posapp.utils.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -80,10 +80,11 @@ fun ProductGrid(
         }
 
         state.errorMessage != null -> {
-            ErrorState(
+            AppState(
+                type = AppStateType.ERROR,
                 title = "Produk gagal dimuat",
-                message = state.errorMessage,
-                onRetry = onRetry
+                description = state.errorMessage,
+                onAction = onRetry
             )
         }
 
@@ -92,7 +93,8 @@ fun ProductGrid(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                EmptyState(
+                AppState(
+                    type = AppStateType.EMPTY,
                     icon = Icons.Outlined.SearchOff,
                     title = "Produk tidak ditemukan",
                     description = "Coba gunakan kata kunci atau kategori lain."

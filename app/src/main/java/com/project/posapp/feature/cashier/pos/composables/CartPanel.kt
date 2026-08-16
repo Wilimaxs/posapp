@@ -34,8 +34,9 @@ import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.feature.cashier.pos.PosUiState
 import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.PosProduct
-import com.project.posapp.ui.theme.Radius
-import com.project.posapp.utils.composable.EmptyState
+import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.AppState
+import com.project.posapp.utils.composable.AppStateType
 import com.project.posapp.utils.toRupiah
 
 @Composable
@@ -74,7 +75,8 @@ fun CartPanel(
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                EmptyState(
+                AppState(
+                    type = AppStateType.EMPTY,
                     icon = Icons.Outlined.ShoppingCart,
                     title = "Keranjang masih kosong",
                     description = "Pilih produk untuk menambahkannya ke keranjang."

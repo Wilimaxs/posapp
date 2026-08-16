@@ -1,4 +1,4 @@
-package com.project.posapp.ui.theme
+package com.project.posapp.core.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes

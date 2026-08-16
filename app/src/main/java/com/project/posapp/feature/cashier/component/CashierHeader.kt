@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.core.theme.Success
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 
 @Composable
 fun CashierHeader(

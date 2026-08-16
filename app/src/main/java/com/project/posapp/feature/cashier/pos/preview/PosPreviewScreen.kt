@@ -37,9 +37,9 @@ import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaym
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentSchema
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTransactionDetail
-import com.project.posapp.ui.theme.Radius
-import com.project.posapp.utils.composable.ErrorState
-import com.project.posapp.utils.composable.LoadingState
+import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.AppState
+import com.project.posapp.utils.composable.AppStateType
 
 @Composable
 fun PosPreviewScreen(
@@ -108,8 +108,10 @@ fun PosPreviewScreen(
                 when {
 
                     state.isPaymentLoading -> {
-                        LoadingState(
-                            text = "Memproses pembayaran..."
+                        AppState(
+                            type = AppStateType.LOADING,
+                            title = "Memproses pembayaran...",
+                            description = "Mohon tunggu sebentar."
                         )
                     }
 
@@ -125,20 +127,26 @@ fun PosPreviewScreen(
                     }
 
                     state.isLoading -> {
-                        LoadingState(text = "Menyiapkan rincian pembayaran...")
+                        AppState(
+                            type = AppStateType.LOADING,
+                            title = "Menyiapkan rincian pembayaran...",
+                            description = "Mohon tunggu sebentar."
+                        )
                     }
 
                     state.errorMessage != null -> {
-                        ErrorState(
+                        AppState(
+                            type = AppStateType.ERROR,
                             title = "Gagal menyiapkan pembayaran",
-                            message = state.errorMessage,
-                            onRetry = {
+                            description = state.errorMessage,
+                            onAction = {
                                 viewModel.loadPreview(
                                     customerId = customerId,
                                     items = items
                                 )
                             },
-                            onDismiss = {
+                            secondaryActionText = "Batal",
+                            onSecondaryAction = {
                                 viewModel.dismiss()
                                 onDismiss()
                             }

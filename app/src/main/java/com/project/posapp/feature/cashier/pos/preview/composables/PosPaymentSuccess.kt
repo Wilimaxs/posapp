@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.model.PosPayment
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.toRupiah
 import java.time.Instant
 import java.time.LocalDate

@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.preview.PosPaymentScheme
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 
 @Composable
 fun PosPreviewPaymentSchema(

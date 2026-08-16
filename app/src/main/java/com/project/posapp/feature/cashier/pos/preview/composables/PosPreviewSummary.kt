@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.model.PosCheckoutPreview
-import com.project.posapp.ui.theme.Radius
+import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.toRupiah
 
 @Composable
