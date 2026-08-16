@@ -2,28 +2,25 @@ package com.project.posapp.feature.cashier.pos.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.PrimaryButton
 
 @Composable
 fun CustomerSelector(
@@ -57,24 +54,27 @@ fun CustomerSelector(
                 .padding(all = Spacing.Micro)
         ) {
             CustomerTypeItem(
-                text = "Guest",
+                text = CustomerType.GUEST.name,
                 selected = customerType == CustomerType.GUEST,
-                onClick = { onCustomerTypeChange(CustomerType.GUEST) }
+                onClick = {
+                    onCustomerTypeChange(CustomerType.GUEST)
+                }
             )
             CustomerTypeItem(
-                text = "Member",
+                text = CustomerType.MEMBER.name,
                 selected = customerType == CustomerType.MEMBER,
-                onClick = { onCustomerTypeChange(CustomerType.MEMBER) }
+                onClick = {
+                    onCustomerTypeChange(CustomerType.MEMBER)
+                }
             )
         }
 
         if (customerType == CustomerType.MEMBER) {
-            Box(
+            VerticalDivider(
                 modifier = Modifier
                     .padding(horizontal = Spacing.Standard)
-                    .width(1.dp)
-                    .height(32.dp)
-                    .background(color = MaterialTheme.colorScheme.outlineVariant)
+                    .height(32.dp),
+                color = MaterialTheme.colorScheme.outlineVariant
             )
             Column(
                 modifier = Modifier.weight(1f)
@@ -90,17 +90,18 @@ fun CustomerSelector(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            OutlinedButton(
-                onClick = onChooseMember
-            ) {
-                Text(
-                    text = if (selectedMember == null) {
-                        "Pilih member"
-                    } else {
-                        "Ganti member"
-                    }
-                )
-            }
+            PrimaryButton(
+                text = if (selectedMember == null) {
+                    "Pilih member"
+                } else {
+                    "Ganti member"
+                },
+                height = 40.dp,
+                radius = Radius.Small,
+                onClick = onChooseMember,
+                reverse = true,
+                fillMaxWidth = false
+            )
         }
     }
 }
@@ -111,24 +112,23 @@ private fun CustomerTypeItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    Text(
+    PrimaryButton(
         text = text,
-        modifier = Modifier
-            .clip(shape = RoundedCornerShape(size = Radius.Small))
-            .clickable(onClick = onClick)
-            .background(
-                color = if (selected) {
-                    MaterialTheme.colorScheme.surface
-                } else {
-                    Color.Transparent
-                }
-            )
-            .padding(horizontal = Spacing.Standard, vertical = Spacing.Tight),
-        style = MaterialTheme.typography.labelLarge,
-        color = if (selected) {
+        onClick = onClick,
+        reverse = !selected,
+        fillMaxWidth = false,
+        height = 40.dp,
+        radius = Radius.Small,
+        containerColor = if (selected) {
+            MaterialTheme.colorScheme.surface
+        } else {
+            Color.Transparent
+        },
+        contentColor = if (selected) {
             MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.onSurfaceVariant
-        }
+        },
+        borderColor = Color.Transparent
     )
 }
