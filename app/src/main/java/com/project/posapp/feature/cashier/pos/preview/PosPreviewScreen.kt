@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,6 +38,7 @@ import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTran
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.AppStateType
+import com.project.posapp.utils.composable.PrimaryButton
 
 @Composable
 fun PosPreviewScreen(
@@ -268,14 +267,17 @@ private fun PreviewFooter(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TextButton(onClick = onDismiss) {
-            Text(text = "Batal")
-        }
-        Button(
+        PrimaryButton(
+            text = "Batal",
+            reverse = true,
+            fillMaxWidth = false,
+            onClick = onDismiss
+        )
+        PrimaryButton(
+            text = "Lanjutkan Pembayaran",
             enabled = enabled,
+            fillMaxWidth = false,
             onClick = onContinue
-        ) {
-            Text(text = "Lanjutkan Pembayaran")
-        }
+        )
     }
 }

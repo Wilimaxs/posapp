@@ -17,12 +17,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +37,7 @@ import com.project.posapp.feature.cashier.pos.customer.composables.PosCustomerLi
 import com.project.posapp.feature.cashier.pos.customer.composables.PosCustomerSearchBar
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.PrimaryButton
 
 @Composable
 fun PosCustomerScreen(
@@ -133,23 +132,28 @@ fun PosCustomerScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    OutlinedButton(onClick = { viewModel.reset(); onDismiss() }) {
-                        Text("Batal")
-                    }
+                    PrimaryButton(
+                        text = "Batal",
+                        reverse = true,
+                        fillMaxWidth = false,
+                        onClick = {
+                            viewModel.reset()
+                            onDismiss()
+                        }
+                    )
 
                     Spacer(Modifier.size(Spacing.Standard))
 
-                    Button(
+                    PrimaryButton(
+                        text = "Pilih Member",
                         enabled = state.selectedCustomer != null,
-
+                        fillMaxWidth = false,
                         onClick = {
-                            val customer = state.selectedCustomer ?: return@Button
+                            val customer = state.selectedCustomer ?: return@PrimaryButton
                             onConfirm(customer)
                             viewModel.reset()
                         }
-                    ) {
-                        Text("Pilih Member")
-                    }
+                    )
                 }
             }
         }

@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Print
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.model.PosPayment
 import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.toRupiah
 import java.time.Instant
 import java.time.LocalDate
@@ -84,20 +84,10 @@ fun PosPaymentSuccess(
             color = MaterialTheme.colorScheme.outlineVariant
         )
 
-        Button(
-            onClick = onFinish,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(
-                size = Radius.Medium
-            )
-        ) {
-            Text(
-                text = "Selesai",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
+        PrimaryButton(
+            text = "Selesai",
+            onClick = onFinish
+        )
     }
 }
 
