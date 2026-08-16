@@ -2,7 +2,8 @@ package com.project.posapp.feature.cashier.pos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.project.posapp.core.network.NetworkResult
+import com.project.posapp.core.network.onError
+import com.project.posapp.core.network.onSuccess
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.PosProduct
 import com.project.posapp.repository.PosRepository
@@ -20,7 +21,7 @@ class PosViewModel @Inject constructor(
     private val repository: PosRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PosUiState())
+    private val _uiState = MutableStateFlow(value = PosUiState())
     val uiState = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
@@ -32,19 +33,16 @@ class PosViewModel @Inject constructor(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            when (val result = repository.getCategories()) {
-                is NetworkResult.Success -> {
+            repository.getCategories()
+                .onSuccess { result ->
                     _uiState.update {
                         it.copy(
                             categories = result.data
                         )
                     }
-                }
-
-                is NetworkResult.Error -> {
+                }.onError {
                     // Untuk sekarang tidak perlu menggagalkan seluruh POS
                 }
-            }
         }
     }
 
@@ -54,11 +52,9 @@ class PosViewModel @Inject constructor(
 
     fun loadNextPage() {
         val state = _uiState.value
-
         if (state.isLoading || state.isLoadingMore || !state.hasNextPage) {
             return
         }
-
         fetchProducts(
             page = state.currentPage + 1,
             append = true
@@ -83,46 +79,38 @@ class PosViewModel @Inject constructor(
                 }
             }
 
-            val result = repository.getProducts(
+            repository.getProducts(
                 page = page,
                 search = state.searchQuery.trim().takeIf { it.length >= 4 },
                 categoryId = state.selectedCategoryId
-            )
+            ).onSuccess { result ->
+                _uiState.update { current ->
+                    val products = result.data.filter(predicate = PosProduct::isActive)
 
-            when (result) {
-                is NetworkResult.Success -> {
-                    _uiState.update { current ->
-                        val products = result.data.filter(PosProduct::isActive)
-
-                        current.copy(
-                            isLoading = false,
-                            isLoadingMore = false,
-
-                            products = if (append) {
-                                (current.products + products).distinctBy(PosProduct::id)
-                            } else {
-                                products
-                            },
-
-                            currentPage = result.meta?.currentPage ?: page,
-                            lastPage = result.meta?.lastPage ?: current.lastPage,
-                            errorMessage = null
-                        )
-                    }
+                    current.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        products = if (append) {
+                            (current.products + products).distinctBy(selector = PosProduct::id)
+                        } else {
+                            products
+                        },
+                        currentPage = result.meta?.currentPage ?: page,
+                        lastPage = result.meta?.lastPage ?: current.lastPage,
+                        errorMessage = null
+                    )
                 }
-
-                is NetworkResult.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isLoadingMore = false,
-                            errorMessage = if (append) {
-                                it.errorMessage
-                            } else {
-                                result.message
-                            }
-                        )
-                    }
+            }.onError { result ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        errorMessage = if (append) {
+                            it.errorMessage
+                        } else {
+                            result.message
+                        }
+                    )
                 }
             }
         }
@@ -130,15 +118,11 @@ class PosViewModel @Inject constructor(
 
     fun onSearchChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
-
         searchJob?.cancel()
-
         val trimmedQuery = query.trim()
-
         if (trimmedQuery.isNotEmpty() && trimmedQuery.length < 4) {
             return
         }
-
         searchJob = viewModelScope.launch {
             delay(timeMillis = 400)
             loadProducts()
