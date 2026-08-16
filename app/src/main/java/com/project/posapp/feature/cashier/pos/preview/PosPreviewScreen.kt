@@ -76,8 +76,20 @@ fun PosPreviewScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(fraction = 0.5f)
-                    .widthIn(max = 680.dp)
+                    .fillMaxWidth(
+                        fraction = if (state.payment != null) {
+                            0.6f
+                        } else {
+                            0.5f
+                        }
+                    )
+                    .widthIn(
+                        max = if (state.payment != null) {
+                            800.dp
+                        } else {
+                            680.dp
+                        }
+                    )
                     .heightIn(max = 720.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surfaceContainerLowest,
