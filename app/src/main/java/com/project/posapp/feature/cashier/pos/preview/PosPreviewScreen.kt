@@ -36,8 +36,8 @@ import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaym
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTransactionDetail
 import com.project.posapp.core.theme.Radius
-import com.project.posapp.utils.composable.AppState
-import com.project.posapp.utils.composable.AppStateType
+import com.project.posapp.utils.composable.AppStateDeleted
+import com.project.posapp.utils.composable.AppStateTypeDeleted
 import com.project.posapp.utils.composable.PrimaryButton
 
 @Composable
@@ -107,8 +107,8 @@ fun PosPreviewScreen(
                 when {
 
                     state.isPaymentLoading -> {
-                        AppState(
-                            type = AppStateType.LOADING,
+                        AppStateDeleted(
+                            type = AppStateTypeDeleted.LOADING,
                             title = "Memproses pembayaran...",
                             description = "Mohon tunggu sebentar."
                         )
@@ -126,16 +126,16 @@ fun PosPreviewScreen(
                     }
 
                     state.isLoading -> {
-                        AppState(
-                            type = AppStateType.LOADING,
+                        AppStateDeleted(
+                            type = AppStateTypeDeleted.LOADING,
                             title = "Menyiapkan rincian pembayaran...",
                             description = "Mohon tunggu sebentar."
                         )
                     }
 
                     state.errorMessage != null -> {
-                        AppState(
-                            type = AppStateType.ERROR,
+                        AppStateDeleted(
+                            type = AppStateTypeDeleted.ERROR,
                             title = "Gagal menyiapkan pembayaran",
                             description = state.errorMessage,
                             onAction = {

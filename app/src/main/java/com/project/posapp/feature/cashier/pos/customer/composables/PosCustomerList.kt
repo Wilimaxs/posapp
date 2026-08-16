@@ -34,8 +34,8 @@ import com.project.posapp.core.theme.Success
 import com.project.posapp.feature.cashier.pos.customer.PosCustomerUiState
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
-import com.project.posapp.utils.composable.AppState
-import com.project.posapp.utils.composable.AppStateType
+import com.project.posapp.utils.composable.AppStateDeleted
+import com.project.posapp.utils.composable.AppStateTypeDeleted
 import com.project.posapp.utils.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -74,8 +74,8 @@ fun PosCustomerList(
                 modifier = modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                AppState(
-                    type = AppStateType.ERROR,
+                AppStateDeleted(
+                    type = AppStateTypeDeleted.ERROR,
                     title = "Member gagal dimuat",
                     description = state.errorMessage,
                     onAction = onRetry,
@@ -88,8 +88,8 @@ fun PosCustomerList(
                 modifier = modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                AppState(
-                    type = AppStateType.EMPTY,
+                AppStateDeleted(
+                    type = AppStateTypeDeleted.EMPTY,
                     icon = Icons.Outlined.SearchOff,
                     title = "Member tidak ditemukan",
                     description = "Coba gunakan nama atau nomor telepon lain."

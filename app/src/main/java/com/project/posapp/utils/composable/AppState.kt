@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 
-enum class AppStateType {
+private enum class AppStateType {
     LOADING,
     EMPTY,
     ERROR
@@ -32,50 +32,89 @@ enum class AppStateType {
 
 @Composable
 fun AppState(
+    isLoading: Boolean,
+    isEmpty: Boolean,
+    errorMessage: String?,
+    modifier: Modifier = Modifier,
+    loadingTitle: String? = null,
+    loadingDescription: String = "Memuat data...",
+    emptyTitle: String = "Data tidak ditemukan",
+    emptyDescription: String = "Belum ada data untuk ditampilkan.",
+    emptyIcon: ImageVector = Icons.Outlined.Inbox,
+    errorTitle: String = "Terjadi kesalahan",
+    errorIcon: ImageVector = Icons.Outlined.CloudOff,
+    actionText: String? = null,
+    secondaryActionText: String? = null,
+    onAction: (() -> Unit)? = null,
+    onSecondaryAction: (() -> Unit)? = null,
+    content: @Composable () -> Unit
+) {
+    when {
+        isLoading -> {
+            StateContent(
+                type = AppStateType.LOADING,
+                modifier = modifier,
+                title = loadingTitle,
+                description = loadingDescription
+            )
+        }
+
+        errorMessage != null -> {
+            StateContent(
+                type = AppStateType.ERROR,
+                modifier = modifier,
+                title = errorTitle,
+                description = errorMessage,
+                icon = errorIcon,
+                actionText = actionText ?: if (onAction != null) {
+                    "Coba lagi"
+                } else {
+                    null
+                },
+                secondaryActionText = secondaryActionText,
+                onAction = onAction,
+                onSecondaryAction = onSecondaryAction
+            )
+        }
+
+        isEmpty -> {
+            StateContent(
+                type = AppStateType.EMPTY,
+                modifier = modifier,
+                title = emptyTitle,
+                description = emptyDescription,
+                icon = emptyIcon,
+                actionText = actionText,
+                secondaryActionText = secondaryActionText,
+                onAction = onAction,
+                onSecondaryAction = onSecondaryAction
+            )
+        }
+
+        else -> {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun StateContent(
     type: AppStateType,
     modifier: Modifier = Modifier,
     title: String? = null,
-    description: String? = null,
+    description: String,
     icon: ImageVector? = null,
     actionText: String? = null,
     secondaryActionText: String? = null,
     onAction: (() -> Unit)? = null,
     onSecondaryAction: (() -> Unit)? = null
 ) {
-    val resolvedTitle = when (type) {
-        AppStateType.LOADING -> title
-        AppStateType.EMPTY -> title ?: "Data tidak ditemukan"
-        AppStateType.ERROR -> title ?: "Terjadi kesalahan"
-    }
-
-    val resolvedDescription = when (type) {
-        AppStateType.LOADING -> description ?: "Memuat data..."
-        AppStateType.EMPTY -> description ?: "Belum ada data untuk ditampilkan."
-        AppStateType.ERROR -> description ?: "Terjadi kesalahan saat memuat data."
-    }
-
-    val resolvedIcon = when (type) {
-        AppStateType.LOADING -> null
-        AppStateType.EMPTY -> icon ?: Icons.Outlined.Inbox
-        AppStateType.ERROR -> icon ?: Icons.Outlined.CloudOff
-    }
-
-    val resolvedActionText = when (type) {
-        AppStateType.ERROR ->
-            actionText ?: if (onAction != null) {
-                "Coba lagi"
-            } else {
-                null
-            }
-
-        else ->
-            actionText
-    }
-
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
+        verticalArrangement = Arrangement.spacedBy(
+            Spacing.Standard
+        )
     ) {
         when (type) {
             AppStateType.LOADING -> {
@@ -86,12 +125,12 @@ fun AppState(
             AppStateType.ERROR -> {
                 StateIcon(
                     type = type,
-                    icon = requireNotNull(resolvedIcon)
+                    icon = requireNotNull(icon)
                 )
             }
         }
 
-        resolvedTitle?.let {
+        title?.let {
             Text(
                 text = it,
                 style = MaterialTheme.typography.titleLarge,
@@ -101,20 +140,26 @@ fun AppState(
         }
 
         Text(
-            text = resolvedDescription,
+            text = description,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 
-        if (onAction != null ||
+        if (
+            onAction != null ||
             onSecondaryAction != null
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(Spacing.Tight),
+                horizontalArrangement = Arrangement.spacedBy(
+                    Spacing.Tight
+                ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (onSecondaryAction != null && secondaryActionText != null) {
+                if (
+                    onSecondaryAction != null &&
+                    secondaryActionText != null
+                ) {
                     PrimaryButton(
                         text = secondaryActionText,
                         onClick = onSecondaryAction,
@@ -123,9 +168,12 @@ fun AppState(
                     )
                 }
 
-                if (onAction != null && resolvedActionText != null) {
+                if (
+                    onAction != null &&
+                    actionText != null
+                ) {
                     PrimaryButton(
-                        text = resolvedActionText,
+                        text = actionText,
                         onClick = onAction,
                         fillMaxWidth = false
                     )
@@ -141,13 +189,19 @@ private fun StateIcon(
     icon: ImageVector
 ) {
     val backgroundColor = when (type) {
-        AppStateType.ERROR -> MaterialTheme.colorScheme.errorContainer
-        else -> MaterialTheme.colorScheme.surfaceContainerHigh
+        AppStateType.ERROR ->
+            MaterialTheme.colorScheme.errorContainer
+
+        else ->
+            MaterialTheme.colorScheme.surfaceContainerHigh
     }
 
     val iconColor = when (type) {
-        AppStateType.ERROR -> MaterialTheme.colorScheme.error
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
+        AppStateType.ERROR ->
+            MaterialTheme.colorScheme.error
+
+        else ->
+            MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     Box(

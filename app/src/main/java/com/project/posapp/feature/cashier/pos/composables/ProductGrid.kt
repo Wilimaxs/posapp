@@ -46,7 +46,6 @@ import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.PosProduct
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.AppState
-import com.project.posapp.utils.composable.AppStateType
 import com.project.posapp.utils.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -69,71 +68,49 @@ fun ProductGrid(
             }
         }
     }
-    when {
-        state.isLoading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
 
-        state.errorMessage != null -> {
-            AppState(
-                type = AppStateType.ERROR,
-                title = "Produk gagal dimuat",
-                description = state.errorMessage,
-                onAction = onRetry
-            )
-        }
-
-        state.products.isEmpty() -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                AppState(
-                    type = AppStateType.EMPTY,
-                    icon = Icons.Outlined.SearchOff,
-                    title = "Produk tidak ditemukan",
-                    description = "Coba gunakan kata kunci atau kategori lain."
+    AppState(
+        isLoading = state.isLoading,
+        errorMessage = state.errorMessage,
+        isEmpty = state.products.isEmpty(),
+        errorTitle = "Produk gagal dimuat",
+        emptyTitle = "Produk tidak ditemukan",
+        emptyDescription = "Coba gunakan kata kunci atau kategori lain.",
+        emptyIcon = Icons.Outlined.SearchOff,
+        onAction = onRetry
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(count = 3),
+            state = gridState,
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Standard),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
+        ) {
+            items(
+                items = state.products,
+                key = PosProduct::id
+            ) { product ->
+                ProductCard(
+                    product = product,
+                    quantityInCart = state.cart[product.id]?.quantity ?: 0,
+                    customerType = state.customerType,
+                    onClick = { onProductClick(product) }
                 )
             }
-        }
 
-        else -> {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(count = 3),
-                state = gridState,
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.Standard),
-                verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
-            ) {
-                items(
-                    items = state.products,
-                    key = { it.id }
-                ) { product ->
-                    ProductCard(
-                        product = product,
-                        quantityInCart = state.cart[product.id]?.quantity ?: 0,
-                        customerType = state.customerType,
-                        onClick = { onProductClick(product) }
-                    )
-                }
-
-                if (state.isLoadingMore) {
-                    item(
-                        span = { GridItemSpan(currentLineSpan = maxLineSpan) }
+            if (state.isLoadingMore) {
+                item(
+                    span = {
+                        GridItemSpan(currentLineSpan = maxLineSpan)
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = Spacing.Standard),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(all = Spacing.Standard),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                        CircularProgressIndicator()
                     }
                 }
             }
