@@ -45,6 +45,7 @@ import com.project.posapp.feature.cashier.pos.PosUiState
 import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.PosProduct
 import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.AppBadge
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -185,74 +186,49 @@ private fun ProductCard(
                 )
             }
 
-            Text(
+            AppBadge(
                 text = "Stok: ${product.stock}",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(all = Spacing.Tight)
-                    .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
-                        shape = RoundedCornerShape(size = Radius.Small)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = if (isOutOfStock) {
-                            MaterialTheme.colorScheme.error
-                        } else {
-                            MaterialTheme.colorScheme.outlineVariant
-                        },
-                        shape = RoundedCornerShape(size = Radius.Small)
-                    )
-                    .padding(
-                        horizontal = Spacing.Tight,
-                        vertical = Spacing.Micro
-                    ),
-                style = MaterialTheme.typography.labelSmall,
-                color = if (isOutOfStock) {
+                    .padding(all = Spacing.Tight),
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
+                contentColor = if (isOutOfStock) {
                     MaterialTheme.colorScheme.error
                 } else {
                     MaterialTheme.colorScheme.onSurface
-                }
+                },
+                borderColor = if (isOutOfStock) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
+                borderWidth = 1.dp
             )
             if (isLowStock) {
-                Text(
+                AppBadge(
                     text = "Stok rendah",
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(Spacing.Tight)
-                        .background(
-                            color = Warning,
-                            shape = RoundedCornerShape(Radius.Small)
-                        )
-                        .padding(
-                            horizontal = Spacing.Tight,
-                            vertical = Spacing.Micro
-                        ),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White
+                        .padding(all = Spacing.Tight),
+                    containerColor = Warning,
+                    contentColor = Color.White
                 )
             }
             if (isOutOfStock) {
-                Text(
+                AppBadge(
                     text = "HABIS",
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .rotate(-12f)
-                        .background(
-                            color = MaterialTheme.colorScheme.error,
-                            shape = RoundedCornerShape(Radius.Default)
-                        )
-                        .padding(
-                            horizontal = Spacing.Standard,
-                            vertical = Spacing.Tight
-                        ),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onError
+                        .rotate(degrees = -12f),
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                    shape = RoundedCornerShape(size = Radius.Default),
+                    textStyle = MaterialTheme.typography.labelLarge
                 )
             }
         }
         Column(
-            modifier = Modifier.padding(Spacing.Compact)
+            modifier = Modifier.padding(all = Spacing.Compact)
         ) {
             if (quantityInCart > 0) {
                 Text(
