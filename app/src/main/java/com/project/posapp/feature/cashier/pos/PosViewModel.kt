@@ -151,7 +151,6 @@ class PosViewModel @Inject constructor(
                 selectedCategoryId = categoryId
             )
         }
-
         loadProducts()
     }
 

@@ -9,8 +9,11 @@ data class PosUiState(
     val isLoadingMore: Boolean = false,
 
     val products: List<PosProduct> = emptyList(),
-    val categories: List<ProductCategory> = emptyList(),
     val cart: Map<Long, CartItem> = emptyMap(),
+
+    val categories: List<ProductCategory> = emptyList(),
+    val selectedCategoryId: Long? = null,
+
 
     val customerType: CustomerType = CustomerType.GUEST,
     val selectedMember: PosCustomer? = null,
@@ -18,7 +21,6 @@ data class PosUiState(
     val showPaymentPreview: Boolean = false,
 
     val searchQuery: String = "",
-    val selectedCategoryId: Long? = null,
 
     val currentPage: Int = 1,
     val lastPage: Int = 1,
