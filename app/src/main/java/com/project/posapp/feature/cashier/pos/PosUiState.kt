@@ -14,9 +14,9 @@ data class PosUiState(
     val categories: List<ProductCategory> = emptyList(),
     val selectedCategoryId: Long? = null,
 
-
     val customerType: CustomerType = CustomerType.GUEST,
     val selectedMember: PosCustomer? = null,
+
     val showCustomerPicker: Boolean = false,
     val showPaymentPreview: Boolean = false,
 
