@@ -3,7 +3,6 @@ package com.project.posapp.feature.cashier.pos.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,12 +16,10 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,8 +32,8 @@ import com.project.posapp.feature.cashier.pos.PosUiState
 import com.project.posapp.feature.cashier.pos.calculatePricing
 import com.project.posapp.model.PosProduct
 import com.project.posapp.core.theme.Radius
-import com.project.posapp.utils.composable.AppStateDeleted
-import com.project.posapp.utils.composable.AppStateTypeDeleted
+import com.project.posapp.utils.composable.AppState
+import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.toRupiah
 
 @Composable
@@ -51,13 +48,13 @@ fun CartPanel(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacing.Large),
+                .padding(all = Spacing.Large),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
@@ -68,25 +65,19 @@ fun CartPanel(
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-        if (state.cartItems.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                AppStateDeleted(
-                    type = AppStateTypeDeleted.EMPTY,
-                    icon = Icons.Outlined.ShoppingCart,
-                    title = "Keranjang masih kosong",
-                    description = "Pilih produk untuk menambahkannya ke keranjang."
-                )
-            }
-        } else {
+        AppState(
+            isLoading = false,
+            errorMessage = null,
+            isEmpty = state.cart.isEmpty(),
+            modifier = modifier.weight(1f),
+            emptyTitle = "Keranjang masih kosong",
+            emptyDescription = "Pilih produk untuk menambahkannya ke keranjang.",
+            emptyIcon = Icons.Outlined.ShoppingCart
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(Spacing.Standard),
+                    .padding(all = Spacing.Standard),
                 verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
             ) {
                 items(
@@ -106,7 +97,7 @@ fun CartPanel(
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         Column(
-            modifier = Modifier.padding(Spacing.Standard)
+            modifier = Modifier.padding(all = Spacing.Standard)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -122,30 +113,29 @@ fun CartPanel(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-
-            Button(
-                enabled = state.cartItems.isNotEmpty() && if (state.customerType == CustomerType.MEMBER) {
-                    state.selectedMember != null
-                } else {
-                    true
-                },
+            PrimaryButton(
+                text = "Bayar ${state.total.toRupiah()}",
                 onClick = onPay,
+                enabled = state.cartItems.isNotEmpty() &&
+                        if (state.customerType == CustomerType.MEMBER) {
+                            state.selectedMember != null
+                        } else {
+                            true
+                        },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = Spacing.Standard)
-            ) {
-                Text(text = "Bayar ${state.total.toRupiah()}")
-            }
+            )
 
-            OutlinedButton(
+            PrimaryButton(
+                text = "Kosongkan Keranjang",
                 onClick = onClear,
                 enabled = state.cartItems.isNotEmpty(),
+                reverse = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = Spacing.Tight)
-            ) {
-                Text("Kosongkan Keranjang")
-            }
+            )
         }
     }
 }

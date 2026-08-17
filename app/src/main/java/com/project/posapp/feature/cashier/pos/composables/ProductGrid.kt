@@ -71,6 +71,7 @@ fun ProductGrid(
     }
 
     AppState(
+        modifier = Modifier.fillMaxSize(),
         isLoading = state.isLoading,
         errorMessage = state.errorMessage,
         isEmpty = state.products.isEmpty(),

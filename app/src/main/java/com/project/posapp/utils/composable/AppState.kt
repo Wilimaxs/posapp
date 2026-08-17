@@ -113,7 +113,8 @@ private fun StateContent(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
-            Spacing.Standard
+            space = Spacing.Standard,
+            alignment = Alignment.CenterVertically
         )
     ) {
         when (type) {
