@@ -69,7 +69,7 @@ fun CartPanel(
             isLoading = false,
             errorMessage = null,
             isEmpty = state.cart.isEmpty(),
-            modifier = modifier.weight(1f),
+            modifier = Modifier.weight(1f),
             emptyTitle = "Keranjang masih kosong",
             emptyDescription = "Pilih produk untuk menambahkannya ke keranjang.",
             emptyIcon = Icons.Outlined.ShoppingCart
