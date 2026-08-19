@@ -167,12 +167,12 @@ private fun PreviewHeader() {
         ) {
             Text(
                 text = "Pembayaran",
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineLarge
             )
 
             Text(
                 text = "Pilih skema dan metode pembayaran untuk menyelesaikan transaksi.",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

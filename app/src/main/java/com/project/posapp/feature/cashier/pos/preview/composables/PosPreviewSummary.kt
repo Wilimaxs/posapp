@@ -43,24 +43,24 @@ fun PosPreviewSummary(
         ) {
             Text(
                 text = "Total pembayaran",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Text(
                 text = (preview.totalAfterDiscount ?: 0L).toRupiah(),
-                style = MaterialTheme.typography.displaySmall,
+                style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.primary
             )
 
             Text(
                 text = "${preview.items.orEmpty().sumOf { it.quantity ?: 0 }} barang",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Row(
-                modifier = Modifier.padding(top = Spacing.Tight),
+                modifier = Modifier.padding(top = Spacing.Standard),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.Tight),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -72,7 +72,7 @@ fun PosPreviewSummary(
 
                 Text(
                     text = "Selesaikan dalam $countdownText",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.tertiary
                 )
             }
@@ -110,19 +110,20 @@ private fun CustomerSummary(
             ) {
                 Text(
                     text = customer?.name ?: "-",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
                     text = "Member",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
 
             Text(
                 text = customer?.phone ?: "-",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
