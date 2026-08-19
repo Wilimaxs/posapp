@@ -33,7 +33,10 @@ fun PosPreviewSummary(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.Large)
     ) {
-        CustomerSummary(preview = preview)
+        if (preview.customer != null) {
+            CustomerSummary(preview = preview)
+        }
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -106,23 +109,19 @@ private fun CustomerSummary(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = customer?.name ?: "Guest",
+                    text = customer?.name ?: "-",
                     style = MaterialTheme.typography.titleMedium
                 )
 
                 Text(
-                    text = if (preview.customerType.equals(other = "member", ignoreCase = true)) {
-                        "Member"
-                    } else {
-                        "Guest"
-                    },
+                    text = "Member",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
 
             Text(
-                text = customer?.phone ?: "Pelanggan umum",
+                text = customer?.phone ?: "-",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
