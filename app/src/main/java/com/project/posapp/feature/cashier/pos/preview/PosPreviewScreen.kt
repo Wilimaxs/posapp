@@ -24,10 +24,11 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewCashPayment
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
-import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentSchema
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTransactionDetail
 import com.project.posapp.utils.composable.AppDialog
+import com.project.posapp.utils.composable.AppSegmentedButton
+import com.project.posapp.utils.composable.AppSegmentedOption
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
 
@@ -95,13 +96,29 @@ fun PosPreviewScreen(
                             preview = preview,
                             countdownText = state.countdownText
                         )
-                        PosPreviewPaymentSchema(
-                            isMember = preview.customerType.equals(
-                                other = "member",
-                                ignoreCase = true
+                        Text(
+                            text = "Skema Pembayaran",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                        AppSegmentedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            options = listOf(
+                                AppSegmentedOption(
+                                    value = PosPaymentScheme.FULL,
+                                    text = "Bayar penuh"
+                                ),
+                                AppSegmentedOption(
+                                    value = PosPaymentScheme.PARTIAL,
+                                    text = "Bayar sebagian",
+                                    enabled = preview.customerType.equals(
+                                        other = "member",
+                                        ignoreCase = true
+                                    )
+                                )
                             ),
-                            selectedScheme = state.paymentSchema,
-                            onSchemeSelected = viewModel::selectedPaymentSchema
+                            selected = state.paymentSchema,
+                            onSelected = viewModel::selectedPaymentSchema
                         )
                         PosPreviewTransactionDetail(preview = preview)
                         if (state.paymentSchema == PosPaymentScheme.PARTIAL) {

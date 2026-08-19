@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,12 +15,13 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.CustomerType
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.AppSegmentedButton
+import com.project.posapp.utils.composable.AppSegmentedOption
 import com.project.posapp.utils.composable.PrimaryButton
 
 @Composable
@@ -45,29 +47,24 @@ fun CustomerSelector(
             .padding(all = Spacing.Standard),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = RoundedCornerShape(size = Radius.Default)
+        AppSegmentedButton(
+            modifier = Modifier.widthIn(
+                min = 220.dp,
+                max = 280.dp
+            ),
+            options = listOf(
+                AppSegmentedOption(
+                    value = CustomerType.GUEST,
+                    text = "Guest"
+                ),
+                AppSegmentedOption(
+                    value = CustomerType.MEMBER,
+                    text = "Member"
                 )
-                .padding(all = Spacing.Micro)
-        ) {
-            CustomerTypeItem(
-                text = CustomerType.GUEST.name,
-                selected = customerType == CustomerType.GUEST,
-                onClick = {
-                    onCustomerTypeChange(CustomerType.GUEST)
-                }
-            )
-            CustomerTypeItem(
-                text = CustomerType.MEMBER.name,
-                selected = customerType == CustomerType.MEMBER,
-                onClick = {
-                    onCustomerTypeChange(CustomerType.MEMBER)
-                }
-            )
-        }
+            ),
+            selected = customerType,
+            onSelected = onCustomerTypeChange
+        )
 
         if (customerType == CustomerType.MEMBER) {
             VerticalDivider(
@@ -104,31 +101,4 @@ fun CustomerSelector(
             )
         }
     }
-}
-
-@Composable
-private fun CustomerTypeItem(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    PrimaryButton(
-        text = text,
-        onClick = onClick,
-        reverse = !selected,
-        fillMaxWidth = false,
-        height = 40.dp,
-        radius = Radius.Small,
-        containerColor = if (selected) {
-            MaterialTheme.colorScheme.surface
-        } else {
-            Color.Transparent
-        },
-        contentColor = if (selected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
-        borderColor = Color.Transparent
-    )
 }
