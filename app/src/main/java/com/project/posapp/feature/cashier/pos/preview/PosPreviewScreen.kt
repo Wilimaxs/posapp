@@ -102,7 +102,6 @@ fun PosPreviewScreen(
                             text = "Skema Pembayaran",
                             style = MaterialTheme.typography.titleMedium
                         )
-
                         AppSegmentedButton(
                             modifier = Modifier.fillMaxWidth(),
                             options = listOf(

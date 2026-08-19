@@ -131,14 +131,16 @@ private fun TransactionTableHeader(
     columns: List<TransactionTableColumn>
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.Tight)
     ) {
         columns.forEach { column ->
             Text(
                 text = column.title,
                 modifier = Modifier.weight(column.weight),
                 textAlign = column.textAlign,
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -153,7 +155,7 @@ private fun TransactionTableItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = Spacing.Micro)
+            .padding(vertical = Spacing.Tight)
     ) {
         Column(
             modifier = Modifier.weight(columns[0].weight),
@@ -161,13 +163,13 @@ private fun TransactionTableItemRow(
         ) {
             Text(
                 text = item.name,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.titleSmall
             )
 
             item.subLabel?.let { subLabel ->
                 Text(
                     text = subLabel,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
