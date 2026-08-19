@@ -2,7 +2,8 @@ package com.project.posapp.feature.cashier.pos.customer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.project.posapp.core.network.NetworkResult
+import com.project.posapp.core.network.onError
+import com.project.posapp.core.network.onSuccess
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.repository.PosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,43 +68,36 @@ class PosCustomerViewModel @Inject constructor(
                     )
                 }
             }
-
-            val result = repository.getCustomers(
+            repository.getCustomers(
                 page = page,
-                search = state.searchQuery.trim().takeIf(String::isNotEmpty)
-            )
-
-            when (result) {
-                is NetworkResult.Success -> {
-                    _uiState.update { current ->
-                        current.copy(
-                            isLoading = false,
-                            isLoadingMore = false,
-                            customers = if (append) {
-                                (current.customers + result.data)
-                                    .distinctBy(PosCustomer::id)
-                            } else {
-                                result.data
-                            },
-                            currentPage = result.meta?.currentPage ?: page,
-                            lastPage = result.meta?.lastPage ?: current.lastPage,
-                            errorMessage = null
-                        )
-                    }
+                search = state.searchQuery.trim().takeIf(predicate = String::isNotEmpty)
+            ).onSuccess { result ->
+                _uiState.update { current ->
+                    current.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        customers = if (append) {
+                            (current.customers + result.data)
+                                .distinctBy(selector = PosCustomer::id)
+                        } else {
+                            result.data
+                        },
+                        currentPage = result.meta?.currentPage ?: page,
+                        lastPage = result.meta?.lastPage ?: current.lastPage,
+                        errorMessage = null
+                    )
                 }
-
-                is NetworkResult.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isLoadingMore = false,
-                            errorMessage = if (append) {
-                                it.errorMessage
-                            } else {
-                                result.message
-                            }
-                        )
-                    }
+            }.onError { result ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        errorMessage = if (append) {
+                            it.errorMessage
+                        } else {
+                            result.message
+                        }
+                    )
                 }
             }
         }
