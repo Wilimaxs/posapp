@@ -34,8 +34,7 @@ import com.project.posapp.core.theme.Success
 import com.project.posapp.feature.cashier.pos.customer.PosCustomerUiState
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
-import com.project.posapp.utils.composable.AppStateDeleted
-import com.project.posapp.utils.composable.AppStateTypeDeleted
+import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -59,79 +58,56 @@ fun PosCustomerList(
             }
     }
 
-    when {
-        state.isLoading -> {
-            Box(
-                modifier = modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        state.errorMessage != null -> {
-            Box(
-                modifier = modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                AppStateDeleted(
-                    type = AppStateTypeDeleted.ERROR,
-                    title = "Member gagal dimuat",
-                    description = state.errorMessage,
-                    onAction = onRetry,
-                )
-            }
-        }
-
-        state.customers.isEmpty() -> {
-            Box(
-                modifier = modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                AppStateDeleted(
-                    type = AppStateTypeDeleted.EMPTY,
-                    icon = Icons.Outlined.SearchOff,
-                    title = "Member tidak ditemukan",
-                    description = "Coba gunakan nama atau nomor telepon lain."
-                )
-            }
-        }
-
-        else -> {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Spacing.Large),
-                state = listState,
-                verticalArrangement = Arrangement.spacedBy(Spacing.Tight)
-            ) {
-                items(
-                    items = state.customers,
-                    key = PosCustomer::id
-                ) { customer ->
-                    PosCustomerItem(
-                        customer = customer,
-                        selected = state.selectedCustomer?.id == customer.id,
-                        onClick = { onCustomerClick(customer) }
-                    )
+    AppState(
+        modifier = modifier.fillMaxWidth(),
+        isLoading = state.isLoading,
+        errorMessage = state.errorMessage,
+        isEmpty = state.customers.isEmpty(),
+        errorTitle = "Member gagal dimuat",
+        emptyTitle = "Member tidak ditemukan",
+        emptyDescription = "Coba gunakan nama atau nomor telepon lain.",
+        emptyIcon = Icons.Outlined.SearchOff,
+        onAction = onRetry
+    ) {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = Spacing.Large),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(Spacing.Tight)
+        ) {
+            items(
+                items = state.customers,
+                key = { customer ->
+                    customer.id ?: customer.customerCode ?: customer.hashCode()
                 }
+            ) { customer ->
+                PosCustomerItem(
+                    customer = customer,
+                    selected = customer.id != null && state.selectedCustomer?.id == customer.id,
+                    onClick = {
+                        onCustomerClick(customer)
+                    }
+                )
+            }
 
-                if (state.isLoadingMore) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(all = Spacing.Standard),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
+            if (state.isLoadingMore) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = Spacing.Standard),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 }
+            }
 
-                item { Spacer(Modifier.height(Spacing.Standard)) }
+            item {
+                Spacer(modifier = Modifier.height(Spacing.Standard))
             }
         }
     }
@@ -200,41 +176,52 @@ private fun PosCustomerItem(
 
         Spacer(modifier = Modifier.size(Spacing.Standard))
 
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = customer.name,
-                    style = MaterialTheme.typography.labelLarge,
+                    text = customer.name ?: "-",
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Text(
-                    text = customer.phone,
-                    style = MaterialTheme.typography.labelSmall,
+                    text = customer.phone ?: "-",
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            Spacer(Modifier.height(Spacing.Micro))
+            Spacer(
+                modifier = Modifier.height(
+                    Spacing.Tight
+                )
+            )
 
             Text(
                 text = customer.address ?: "-",
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(Modifier.height(Spacing.Micro))
+            Spacer(
+                modifier = Modifier.height(
+                    Spacing.Tight
+                )
+            )
 
             Text(
                 text = if (receivable == null) {
                     "Tidak ada piutang"
                 } else {
-                    "Total piutang ${receivable.totalRemainingBalance.toRupiah()} dari ${receivable.transactionCount} transaksi"
+                    "Total piutang ${receivable.totalRemainingBalance.toRupiah()} " +
+                            "dari ${receivable.transactionCount} transaksi"
                 },
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = if (receivable == null) {
                     Success
                 } else {

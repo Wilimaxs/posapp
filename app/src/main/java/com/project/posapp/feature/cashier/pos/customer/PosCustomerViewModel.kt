@@ -113,6 +113,10 @@ class PosCustomerViewModel @Inject constructor(
         _uiState.update { it.copy(searchQuery = query) }
         searchJob?.cancel()
         requestJob?.cancel()
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isNotEmpty() && trimmedQuery.length < 4) {
+            return
+        }
         searchJob = viewModelScope.launch {
             delay(timeMillis = 400)
             loadCustomers()

@@ -189,6 +189,7 @@ private fun ProductCard(
 
             AppBadge(
                 text = "Stok: ${product.stock}",
+                textStyle = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(all = Spacing.Tight),
@@ -234,14 +235,14 @@ private fun ProductCard(
             if (quantityInCart > 0) {
                 Text(
                     text = "$quantityInCart di keranjang",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
 
             Text(
                 text = product.name,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(vertical = Spacing.Tight)
             )
@@ -252,7 +253,7 @@ private fun ProductCard(
                 ) {
                     Text(
                         text = pricing.basePrice.toRupiah(),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textDecoration = TextDecoration.LineThrough
                     )
@@ -260,21 +261,15 @@ private fun ProductCard(
                     Text(
                         text = pricing.discountedPrice!!.toRupiah(),
                         modifier = Modifier.padding(start = Spacing.Tight),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                Text(
-                    text = "Diskon untuk 1 item",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
             } else {
                 Text(
                     text = pricing.basePrice.toRupiah(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     color = if (isOutOfStock) {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     } else {
@@ -288,7 +283,7 @@ private fun ProductCard(
                     CustomerType.GUEST -> "Grosir: ${product.price.grocier.toRupiah()}"
                     CustomerType.MEMBER -> "Normal: ${product.price.normal.toRupiah()}"
                 },
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

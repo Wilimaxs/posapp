@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,15 +31,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.customer.composables.PosCustomerList
-import com.project.posapp.feature.cashier.pos.customer.composables.PosCustomerSearchBar
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
+import com.project.posapp.utils.composable.AppForm
 import com.project.posapp.utils.composable.PrimaryButton
 
 @Composable
@@ -47,6 +52,8 @@ fun PosCustomerScreen(
     viewModel: PosCustomerViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadCustomers(selectedMember = currentMember)
@@ -87,14 +94,14 @@ fun PosCustomerScreen(
                     Column {
                         Text(
                             text = "Pilih Member",
-                            style = MaterialTheme.typography.headlineMedium
+                            style = MaterialTheme.typography.headlineLarge
                         )
 
                         Spacer(Modifier.height(Spacing.Micro))
 
                         Text(
                             text = "Cari dan pilih member untuk transaksi ini.",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -109,11 +116,36 @@ fun PosCustomerScreen(
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-                PosCustomerSearchBar(
+                AppForm(
                     value = state.searchQuery,
                     onValueChange = viewModel::onSearchChange,
+                    placeholder = "Cari nama atau nomor telepon",
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = {
+                        if (state.searchQuery.isNotEmpty()) {
+                            IconButton(
+                                onClick = {
+                                    viewModel.onSearchChange(query = "")
+                                    focusManager.clearFocus()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Close,
+                                    contentDescription = "Hapus pencarian"
+                                )
+                            }
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                     modifier = Modifier.padding(all = Spacing.Large)
                 )
+
                 PosCustomerList(
                     state = state,
                     onCustomerClick = viewModel::selectCustomer,
