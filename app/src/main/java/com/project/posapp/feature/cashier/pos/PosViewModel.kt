@@ -25,6 +25,7 @@ class PosViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
+    private var requestJob: Job? = null
 
     init {
         loadCategories()
@@ -65,9 +66,11 @@ class PosViewModel @Inject constructor(
         page: Int,
         append: Boolean = false
     ) {
+        requestJob?.cancel()
+
         val state = _uiState.value
 
-        viewModelScope.launch {
+        requestJob = viewModelScope.launch {
             _uiState.update {
                 if (append) {
                     it.copy(isLoadingMore = true)
@@ -119,6 +122,7 @@ class PosViewModel @Inject constructor(
     fun onSearchChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
         searchJob?.cancel()
+        requestJob?.cancel()
         val trimmedQuery = query.trim()
         if (trimmedQuery.isNotEmpty() && trimmedQuery.length < 4) {
             return
