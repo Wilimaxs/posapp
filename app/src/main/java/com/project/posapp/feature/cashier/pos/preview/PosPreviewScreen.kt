@@ -25,12 +25,14 @@ import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewCash
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
-import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewTransactionDetail
 import com.project.posapp.utils.composable.AppDialog
 import com.project.posapp.utils.composable.AppSegmentedButton
 import com.project.posapp.utils.composable.AppSegmentedOption
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
+import com.project.posapp.utils.composable.TransactionDetailTable
+import com.project.posapp.utils.composable.TransactionTableItem
+import com.project.posapp.utils.toRupiah
 
 @Composable
 fun PosPreviewScreen(
@@ -120,7 +122,32 @@ fun PosPreviewScreen(
                             selected = state.paymentSchema,
                             onSelected = viewModel::selectedPaymentSchema
                         )
-                        PosPreviewTransactionDetail(preview = preview)
+                        TransactionDetailTable(
+                            title = "Rincian transaksi",
+                            items = preview.items.orEmpty().map { item ->
+                                TransactionTableItem(
+                                    name = item.name ?: "-",
+                                    price = (item.unitPrice ?: 0L).toRupiah(),
+                                    quantity = (item.quantity ?: 0).toString(),
+                                    subtotal = (item.subtotalAfterDiscount ?: 0L).toRupiah(),
+                                    subLabel = item.discount?.let { discount ->
+                                        buildString {
+                                            append(discount.name ?: "Diskon")
+                                            discount.value?.let { value ->
+                                                append(" • Diskon ${value.toRupiah()} / item")
+                                            }
+                                        }
+                                    }
+                                )
+                            },
+                            subtotalLabel = "Subtotal semua produk",
+                            subtotalValue = (preview.totalBeforeDiscount ?: 0L).toRupiah(),
+                            discountLabel = "Total diskon",
+                            discountValue = "-${(preview.totalDiscount ?: 0L).toRupiah()}",
+                            showDiscount = (preview.totalDiscount ?: 0L) > 0,
+                            totalLabel = "Total",
+                            totalValue = (preview.totalAfterDiscount ?: 0L).toRupiah()
+                        )
                         if (state.paymentSchema == PosPaymentScheme.PARTIAL) {
                             PosPreviewPartialDetail(
                                 total = preview.totalAfterDiscount ?: 0L,
