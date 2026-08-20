@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -21,9 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.preview.PosPaymentMethod
-import com.project.posapp.core.theme.Radius
 
 @Composable
 fun PosPreviewPaymentMethode(
@@ -36,11 +37,11 @@ fun PosPreviewPaymentMethode(
         verticalArrangement = Arrangement.spacedBy(Spacing.Large)
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(Spacing.Tight)
+            verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
         ) {
             Text(
                 text = "Metode Pembayaran",
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.titleMedium
             )
 
             Row(
@@ -70,30 +71,28 @@ fun PosPreviewPaymentMethode(
                 )
             }
         }
+
         if (selectedMethod == null) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(
-                    Spacing.Standard
-                ),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Standard),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ErrorOutline,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
                 )
 
                 Text(
                     text = "Pilih salah satu metode pembayaran untuk melanjutkan.",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
-
     }
-
 }
 
 @Composable
@@ -105,7 +104,7 @@ private fun PaymentMethodCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(size = Radius.Medium)
+    val shape = RoundedCornerShape(Radius.Medium)
 
     Column(
         modifier = modifier
@@ -123,22 +122,26 @@ private fun PaymentMethodCard(
                 shape = shape
             )
             .clickable(onClick = onClick)
-            .padding(all = Spacing.Standard),
-        verticalArrangement = Arrangement.spacedBy(Spacing.Tight)
+            .padding(all = Spacing.Large),
+        verticalArrangement = Arrangement.spacedBy(Spacing.Tight),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
+            modifier = Modifier.size(42.dp),
             tint = if (selected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
             }
         )
+
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge
+            style = MaterialTheme.typography.titleLarge
         )
+
         Text(
             text = description,
             style = MaterialTheme.typography.bodySmall,
