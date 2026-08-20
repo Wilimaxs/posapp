@@ -16,8 +16,10 @@ data class PosPreviewUiState(
 
     val cashReceived: String = "",
 
+    // KHUSUS PAYMENT
     val isPaymentLoading: Boolean = false,
     val payment: PosPayment? = null,
+    val paymentErrorMessage: String? = null,
 
     val errorMessage: String? = null
 ) {

@@ -31,12 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
+import com.project.posapp.feature.cashier.pos.preview.composables.PosPaymentDialog
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPartialDetail
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.utils.composable.AppCashQuickAmount
 import com.project.posapp.utils.composable.AppDialog
 import com.project.posapp.utils.composable.AppForm
+import com.project.posapp.utils.composable.AppResultDialog
+import com.project.posapp.utils.composable.AppResultType
 import com.project.posapp.utils.composable.AppSegmentedButton
 import com.project.posapp.utils.composable.AppSegmentedOption
 import com.project.posapp.utils.composable.AppState
@@ -51,7 +54,7 @@ fun PosPreviewScreen(
     customerId: Long?,
     items: Map<Long, Int>,
     onDismiss: () -> Unit,
-    onPaymentFinished: () -> Unit,
+    onTransactionReset: () -> Unit,
     viewModel: PosPreviewViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -61,6 +64,36 @@ fun PosPreviewScreen(
             customerId = customerId,
             items = items
         )
+    }
+
+    state.payment?.let { payment ->
+        PosPaymentDialog(
+            payment = payment,
+            onPrintReceipt = {},
+            onSendReceipt = {},
+            onFinish = {
+                viewModel.dismiss()
+                onTransactionReset()
+            }
+        )
+        return
+    }
+
+    state.paymentErrorMessage?.let { message ->
+        AppResultDialog(
+            type = AppResultType.ERROR,
+            title = "Pembayaran Gagal",
+            message = message,
+            primaryButtonText = "Coba Lagi",
+            onPrimaryClick = viewModel::payment,
+            secondaryButtonText = "Batal",
+            onSecondaryClick = {
+                viewModel.dismiss()
+                onTransactionReset()
+            },
+            isLoading = state.isPaymentLoading
+        )
+        return
     }
     AppDialog(
         onDismiss = {
@@ -186,18 +219,12 @@ fun PosPreviewScreen(
 
                     PreviewFooter(
                         enabled = state.canContinue,
+                        isLoading = state.isPaymentLoading,
                         onDismiss = {
                             viewModel.dismiss()
                             onDismiss()
                         },
-                        onContinue = {
-                            viewModel.payment(
-                                onError = {
-                                    viewModel.dismiss()
-                                    onDismiss()
-                                }
-                            )
-                        }
+                        onContinue = viewModel::payment
                     )
                 }
             }
@@ -237,6 +264,7 @@ private fun PreviewHeader() {
 @Composable
 private fun PreviewFooter(
     enabled: Boolean,
+    isLoading: Boolean,
     onDismiss: () -> Unit,
     onContinue: () -> Unit
 ) {
@@ -253,13 +281,19 @@ private fun PreviewFooter(
         PrimaryButton(
             text = "Batal",
             reverse = true,
+            enabled = !isLoading,
             fillMaxWidth = false,
             onClick = onDismiss
         )
-        Spacer(modifier = Modifier.width(Spacing.Standard))
+
+        Spacer(
+            modifier = Modifier.width(Spacing.Standard)
+        )
+
         PrimaryButton(
             text = "Lanjutkan Pembayaran",
             enabled = enabled,
+            isLoading = isLoading,
             fillMaxWidth = false,
             onClick = onContinue
         )

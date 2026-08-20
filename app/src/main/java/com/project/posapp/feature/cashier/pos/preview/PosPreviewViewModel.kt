@@ -3,6 +3,8 @@ package com.project.posapp.feature.cashier.pos.preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.posapp.core.network.NetworkResult
+import com.project.posapp.core.network.onError
+import com.project.posapp.core.network.onSuccess
 import com.project.posapp.repository.PosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -170,9 +172,7 @@ class PosPreviewViewModel @Inject constructor(
         }
     }
 
-    fun payment(
-        onError: () -> Unit
-    ) {
+    fun payment() {
         val state = _uiState.value
         val saleId = state.preview?.saleId ?: return
         val paymentMethod = state.paymentMethod ?: return
@@ -187,35 +187,30 @@ class PosPreviewViewModel @Inject constructor(
                 )
             }
 
-            when (
-                val result = repository.createPayment(
-                    saleId = saleId,
-                    paymentAmount = state.paymentRequestAmount,
-                    paymentMethod = paymentMethod.value,
-                    dueDate = if (state.paymentSchema == PosPaymentScheme.PARTIAL) {
-                        state.dueDate
-                    } else {
-                        null
-                    }
-                )
-            ) {
-                is NetworkResult.Success -> {
-                    countdownJob?.cancel()
-                    _uiState.update {
-                        it.copy(
-                            isPaymentLoading = false,
-                            payment = result.data
-                        )
-                    }
+            repository.createPayment(
+                saleId = saleId,
+                paymentAmount = state.paymentRequestAmount,
+                paymentMethod = paymentMethod.value,
+                dueDate = if (state.paymentSchema == PosPaymentScheme.PARTIAL) {
+                    state.dueDate
+                } else {
+                    null
                 }
-
-                is NetworkResult.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            isPaymentLoading = false
-                        )
-                    }
-                    onError()
+            ).onSuccess { result ->
+                countdownJob?.cancel()
+                _uiState.update {
+                    it.copy(
+                        isPaymentLoading = false,
+                        payment = result.data,
+                        paymentErrorMessage = null
+                    )
+                }
+            }.onError { result ->
+                _uiState.update {
+                    it.copy(
+                        isPaymentLoading = false,
+                        paymentErrorMessage = result.message
+                    )
                 }
             }
         }

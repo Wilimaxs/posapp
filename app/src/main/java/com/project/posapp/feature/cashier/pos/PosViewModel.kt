@@ -246,7 +246,7 @@ class PosViewModel @Inject constructor(
         }
     }
 
-    fun finishPayment() {
+    fun resetTransaction() {
         _uiState.update {
             it.copy(
                 cart = emptyMap(),
