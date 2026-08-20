@@ -47,7 +47,7 @@ import com.project.posapp.model.PosProduct
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.AppBadge
 import com.project.posapp.utils.composable.AppState
-import com.project.posapp.utils.toRupiah
+import com.project.posapp.utils.extensions.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable

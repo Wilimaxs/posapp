@@ -35,7 +35,7 @@ import com.project.posapp.feature.cashier.pos.customer.PosCustomerUiState
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.AppState
-import com.project.posapp.utils.toRupiah
+import com.project.posapp.utils.extensions.toRupiah
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable

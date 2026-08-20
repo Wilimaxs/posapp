@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.core.theme.Radius
-import com.project.posapp.utils.toRupiah
+import com.project.posapp.utils.extensions.toRupiah
 
 @Composable
 fun PosPreviewSummary(

@@ -34,7 +34,7 @@ import com.project.posapp.model.PosProduct
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
-import com.project.posapp.utils.toRupiah
+import com.project.posapp.utils.extensions.toRupiah
 
 @Composable
 fun CartPanel(

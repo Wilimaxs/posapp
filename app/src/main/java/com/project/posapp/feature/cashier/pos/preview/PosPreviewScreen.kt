@@ -32,7 +32,7 @@ import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.composable.TransactionDetailTable
 import com.project.posapp.utils.composable.TransactionTableItem
-import com.project.posapp.utils.toRupiah
+import com.project.posapp.utils.extensions.toRupiah
 
 @Composable
 fun PosPreviewScreen(

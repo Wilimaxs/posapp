@@ -31,7 +31,7 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.model.PosPayment
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.PrimaryButton
-import com.project.posapp.utils.toRupiah
+import com.project.posapp.utils.extensions.toRupiah
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
