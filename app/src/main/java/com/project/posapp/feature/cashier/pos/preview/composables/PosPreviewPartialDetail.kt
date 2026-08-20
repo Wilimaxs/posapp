@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -89,24 +88,21 @@ fun PosPreviewPartialDetail(
                 label = "Tanggal jatuh tempo",
                 placeholder = "Pilih tanggal",
                 readOnly = true,
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            context.showDatePicker(
-                                initialDate = dueDate.toLocalDateOrNull()
-                                    ?: LocalDate.now()
-                            ) { date ->
-                                onDueDateChange(
-                                    date.toString()
-                                )
-                            }
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.CalendarToday,
-                            contentDescription = "Pilih tanggal jatuh tempo"
+                onClick = {
+                    context.showDatePicker(
+                        initialDate = dueDate.toLocalDateOrNull()
+                            ?: LocalDate.now()
+                    ) { date ->
+                        onDueDateChange(
+                            date.toString()
                         )
                     }
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.CalendarToday,
+                        contentDescription = null
+                    )
                 },
                 textStyle = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.primary,

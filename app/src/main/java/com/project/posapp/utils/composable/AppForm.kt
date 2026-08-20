@@ -1,6 +1,8 @@
 package com.project.posapp.utils.composable
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -43,6 +45,7 @@ fun AppForm(
     required: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    onClick: (() -> Unit)? = null,
 
     isPassword: Boolean = false,
     singleLine: Boolean = true,
@@ -63,7 +66,9 @@ fun AppForm(
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
     minHeight: Dp = 56.dp
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
+    var passwordVisible by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         modifier = modifier,
@@ -96,89 +101,111 @@ fun AppForm(
             }
         }
 
-        OutlinedTextField(
-            value = value,
-            onValueChange = { newValue ->
-                if (
-                    maxLength == null ||
-                    newValue.length <= maxLength
-                ) {
-                    onValueChange(newValue)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(
-                    minHeight = minHeight
-                ),
-            enabled = enabled,
-            readOnly = readOnly,
-            singleLine = singleLine,
-            minLines = minLines,
-            maxLines = maxLines,
-            textStyle = textStyle,
-            isError = errorMessage != null,
-            placeholder = {
-                if (placeholder.isNotBlank()) {
-                    Text(
-                        text = placeholder
-                    )
-                }
-            },
-            prefix = prefixText?.let { text ->
-                {
-                    Text(text = text)
-                }
-            },
-            leadingIcon = leadingIcon,
-            trailingIcon = when {
-                isPassword -> {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            OutlinedTextField(
+                value = value,
+                onValueChange = { newValue ->
+                    if (
+                        maxLength == null ||
+                        newValue.length <= maxLength
+                    ) {
+                        onValueChange(newValue)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(
+                        minHeight = minHeight
+                    ),
+                enabled = enabled,
+                readOnly = readOnly,
+                singleLine = singleLine,
+                minLines = minLines,
+                maxLines = maxLines,
+                textStyle = textStyle,
+                isError = errorMessage != null,
+                placeholder = {
+                    if (placeholder.isNotBlank()) {
+                        Text(
+                            text = placeholder
+                        )
+                    }
+                },
+                prefix = prefixText?.let { text ->
                     {
-                        IconButton(
-                            onClick = {
-                                passwordVisible = !passwordVisible
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (passwordVisible) {
-                                    Icons.Outlined.VisibilityOff
-                                } else {
-                                    Icons.Outlined.Visibility
-                                },
-                                contentDescription = if (passwordVisible) {
-                                    "Sembunyikan password"
-                                } else {
-                                    "Tampilkan password"
+                        Text(text = text)
+                    }
+                },
+                leadingIcon = leadingIcon,
+                trailingIcon = when {
+                    isPassword -> {
+                        {
+                            IconButton(
+                                onClick = {
+                                    passwordVisible = !passwordVisible
                                 }
-                            )
+                            ) {
+                                Icon(
+                                    imageVector = if (passwordVisible) {
+                                        Icons.Outlined.VisibilityOff
+                                    } else {
+                                        Icons.Outlined.Visibility
+                                    },
+                                    contentDescription = if (passwordVisible) {
+                                        "Sembunyikan password"
+                                    } else {
+                                        "Tampilkan password"
+                                    }
+                                )
+                            }
                         }
                     }
-                }
 
-                trailingIcon != null -> trailingIcon
-                else ->
-                    null
-            },
-            visualTransformation = if (isPassword && !passwordVisible) {
-                PasswordVisualTransformation()
-            } else {
-                VisualTransformation.None
-            },
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            supportingText = errorMessage?.let { message ->
-                {
-                    Text(
-                        text = message,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = containerColor,
-                unfocusedContainerColor = containerColor,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    trailingIcon != null -> trailingIcon
+
+                    else -> null
+                },
+                visualTransformation = if (
+                    isPassword &&
+                    !passwordVisible
+                ) {
+                    PasswordVisualTransformation()
+                } else {
+                    VisualTransformation.None
+                },
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                supportingText = errorMessage?.let { message ->
+                    {
+                        Text(
+                            text = message,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor =
+                        MaterialTheme.colorScheme.surfaceContainerHigh
+                )
             )
-        )
+
+            if (
+                enabled &&
+                readOnly &&
+                onClick != null
+            ) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable(
+                            onClick = onClick
+                        )
+                )
+            }
+        }
     }
 }
