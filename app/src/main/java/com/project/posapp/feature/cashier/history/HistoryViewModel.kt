@@ -251,12 +251,23 @@ class HistoryViewModel @Inject constructor(
         searchJob?.cancel()
         listJob?.cancel()
 
+        val limitedQuery = query.take(255)
+
         _uiState.update {
             it.copy(
-                searchQuery = query.take(255),
+                searchQuery = limitedQuery,
                 isListLoading = false,
                 isLoadingMore = false
             )
+        }
+
+        val trimmedQuery = limitedQuery.trim()
+
+        if (
+            trimmedQuery.isNotEmpty() &&
+            trimmedQuery.length < 4
+        ) {
+            return
         }
 
         searchJob = viewModelScope.launch {
