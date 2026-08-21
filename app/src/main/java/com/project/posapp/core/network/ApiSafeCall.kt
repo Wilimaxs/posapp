@@ -26,7 +26,8 @@ suspend fun <T> apiSafeCall(
         } else {
             ErrorMapper.map(response)
         }
-
+    } catch (e: CancellationException) {
+        throw e
     } catch (_: IOException) {
         NetworkResult.Error(
             message = "Tidak dapat terhubung ke server."

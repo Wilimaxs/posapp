@@ -104,13 +104,23 @@ class PosCustomerViewModel @Inject constructor(
     }
 
     fun onSearchChange(query: String) {
-        _uiState.update { it.copy(searchQuery = query) }
         searchJob?.cancel()
         requestJob?.cancel()
+
+        _uiState.update {
+            it.copy(
+                searchQuery = query,
+                isLoading = false,
+                isLoadingMore = false
+            )
+        }
+
         val trimmedQuery = query.trim()
+
         if (trimmedQuery.isNotEmpty() && trimmedQuery.length < 4) {
             return
         }
+
         searchJob = viewModelScope.launch {
             delay(timeMillis = 400)
             loadCustomers()
