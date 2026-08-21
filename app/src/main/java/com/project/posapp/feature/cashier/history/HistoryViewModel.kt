@@ -98,6 +98,10 @@ class HistoryViewModel @Inject constructor(
     ) {
         listJob?.cancel()
 
+        if (!append) {
+            detailJob?.cancel()
+        }
+
         val state = _uiState.value
 
         listJob = viewModelScope.launch {
@@ -151,8 +155,14 @@ class HistoryViewModel @Inject constructor(
                         isListLoading = false,
                         isLoadingMore = false,
                         listErrorMessage = null,
-                        detailErrorMessage = null
-                    )
+                        detailErrorMessage = null,
+                        isDetailLoading = if (append) {
+                            it.isDetailLoading
+                        } else {
+                            false
+                        },
+
+                        )
                 }
 
                 if (!append && selectedInvoiceNumber != null) {
@@ -178,7 +188,12 @@ class HistoryViewModel @Inject constructor(
                             it.listErrorMessage
                         } else {
                             result.message
-                        }
+                        },
+                        isDetailLoading = if (append) {
+                            it.isDetailLoading
+                        } else {
+                            false
+                        },
                     )
                 }
             }
