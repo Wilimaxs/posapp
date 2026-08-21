@@ -155,6 +155,7 @@ fun PosPreviewScreen(
                 errorMessage = state.errorMessage,
                 isEmpty = state.preview == null,
                 errorTitle = "Gagal menyiapkan pembayaran",
+                secondaryActionText = "Keluar",
                 onAction = {
                     viewModel.loadPreview(
                         customerId = customerId,

@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.project.posapp.feature.cashier.component.CashierHeader
 import com.project.posapp.feature.cashier.component.CashierSidebar
 import com.project.posapp.feature.cashier.pos.PosScreen
-import com.project.posapp.feature.cashier.transaction.TransactionScreen
+import com.project.posapp.feature.cashier.history.TransactionScreen
 import com.project.posapp.route.Screen
 
 @Composable
