@@ -1,6 +1,9 @@
 package com.project.posapp.core.network
 
 import com.project.posapp.model.ApiResponse
+import com.project.posapp.model.HistoryDetail
+import com.project.posapp.model.HistorySummary
+import com.project.posapp.model.HistoryTransaction
 import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.PosPayment
@@ -16,6 +19,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
+    // POS API
     @GET(value = "v1/products")
     suspend fun getProducts(
         @Query(value = "page") page: Int = 1,
@@ -46,4 +50,23 @@ interface ApiService {
     suspend fun cancelCheckoutPreview(
         @Path("saleId") saleId: Long
     ): Response<ApiResponse<Unit>>
+
+    // HISTORY API
+    @GET("v1/history/summary")
+    suspend fun getHistorySummary(): Response<ApiResponse<HistorySummary>>
+
+    @GET("v1/history")
+    suspend fun getHistory(
+        @Query("page") page: Int = 1,
+        @Query("search") search: String? = null,
+        @Query("date_filter") dateFilter: String? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null,
+        @Query("payment_status") paymentStatus: String? = null
+    ): Response<ApiResponse<List<HistoryTransaction>>>
+
+    @GET("v1/history/{invoiceNumber}")
+    suspend fun getHistoryDetail(
+        @Path("invoiceNumber") invoiceNumber: String
+    ): Response<ApiResponse<HistoryDetail>>
 }
