@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
@@ -30,7 +31,8 @@ import com.project.posapp.utils.composable.AppBadge
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.composable.TransactionDetailTable
-import com.project.posapp.utils.extensions.toLongDisplayDateTime
+import com.project.posapp.utils.extensions.toLongDisplayDateFromDateTime
+import com.project.posapp.utils.extensions.toRupiah
 
 @Composable
 fun HistoryDetailPanel(
@@ -96,7 +98,24 @@ fun HistoryDetailPanel(
                         title = "Riwayat Penjualan",
                         items = historyDetail.items.map {
                             it.toTransactionTableItem()
-                        }
+                        },
+                        subtotalLabel = "Subtotal semua produk",
+                        subtotalValue = (
+                                historyDetail.totalBeforeDiscount
+                                    ?: 0L
+                                ).toRupiah(),
+                        discountLabel = "Total diskon",
+                        discountValue = "-${
+                            (historyDetail.totalDiscount ?: 0L)
+                                .toRupiah()
+                        }",
+                        showDiscount =
+                            (historyDetail.totalDiscount ?: 0L) > 0L,
+                        totalLabel = "Total",
+                        totalValue = (
+                                historyDetail.totalAfterDiscount
+                                    ?: 0L
+                                ).toRupiah()
                     )
 
                     if (
@@ -122,7 +141,12 @@ fun HistoryDetailPanel(
                     },
                     enabled = onPrintReceipt != null,
                     reverse = true,
-                    modifier = Modifier.padding(Spacing.Standard)
+                    height = 44.dp,
+                    textStyle = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(
+                        horizontal = Spacing.Standard,
+                        vertical = Spacing.Tight
+                    )
                 )
             }
         }
@@ -138,24 +162,23 @@ private fun HistoryDetailHeader(
         ignoreCase = true
     )
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Spacing.Standard),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
+            .padding(
+                horizontal = Spacing.Standard,
+                vertical = Spacing.Compact
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            Spacing.Standard
+        )
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(
-                Spacing.Micro
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "DETAIL TRANSAKSI",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(
                     Spacing.Tight
@@ -163,8 +186,9 @@ private fun HistoryDetailHeader(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = detail.invoiceNumber ?: "-",
-                    style = MaterialTheme.typography.titleLarge
+                    text = "DETAIL TRANSAKSI",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 AppBadge(
@@ -182,23 +206,29 @@ private fun HistoryDetailHeader(
                     }
                 )
             }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(
+                    Spacing.Tight
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = detail.store?.name ?: "-",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = detail.createdAt.toLongDisplayDateFromDateTime(),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         }
-
-        Column(
-            horizontalAlignment = Alignment.End
-        ) {
-            Text(
-                text = detail.createdAt
-                    .toLongDisplayDateTime(),
-                style = MaterialTheme.typography.bodySmall
-            )
-
-            Text(
-                text = detail.store?.name ?: "-",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        Text(
+            text = detail.invoiceNumber ?: "-",
+            style = MaterialTheme.typography.titleLarge,
+        )
     }
 }
 

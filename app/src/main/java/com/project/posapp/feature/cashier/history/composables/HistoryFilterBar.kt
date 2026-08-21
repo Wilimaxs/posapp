@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Check
@@ -34,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
@@ -58,6 +62,8 @@ fun HistoryFilterBar(
     onPaymentStatusChange: (HistoryPaymentStatus?) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -81,11 +87,20 @@ fun HistoryFilterBar(
                     contentDescription = null
                 )
             },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
             trailingIcon = if (state.searchQuery.isNotEmpty()) {
                 {
                     IconButton(
                         onClick = {
                             onSearchChange("")
+                            focusManager.clearFocus()
                         }
                     ) {
                         Icon(

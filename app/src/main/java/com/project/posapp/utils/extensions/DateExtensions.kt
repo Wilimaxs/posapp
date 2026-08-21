@@ -65,3 +65,15 @@ fun String?.toLongDisplayDateTime(
             )
         )
         ?: fallback
+
+fun String?.toLongDisplayDateFromDateTime(
+    fallback: String = "-"
+): String =
+    toZonedDateTimeOrNull()
+        ?.format(
+            DateTimeFormatter.ofPattern(
+                "dd MMMM yyyy",
+                indonesiaLocale
+            )
+        )
+        ?: fallback

@@ -37,7 +37,7 @@ fun HistorySummarySection(
             Box(
                 modifier = modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(96.dp),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
@@ -48,7 +48,7 @@ fun HistorySummarySection(
             Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(96.dp)
                     .background(
                         MaterialTheme.colorScheme.surfaceContainerLowest,
                         RoundedCornerShape(Radius.Medium)
@@ -128,7 +128,7 @@ private fun HistorySummaryCard(
 ) {
     Column(
         modifier = modifier
-            .height(120.dp)
+            .height(96.dp)
             .background(
                 MaterialTheme.colorScheme.surfaceContainerLowest,
                 RoundedCornerShape(Radius.Medium)
@@ -138,8 +138,10 @@ private fun HistorySummaryCard(
                 MaterialTheme.colorScheme.outlineVariant,
                 RoundedCornerShape(Radius.Medium)
             )
-            .padding(Spacing.Standard),
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(Spacing.Compact),
+        verticalArrangement = Arrangement.spacedBy(
+            Spacing.Tight
+        )
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -157,7 +159,7 @@ private fun HistorySummaryCard(
 
         Text(
             text = data.value,
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }

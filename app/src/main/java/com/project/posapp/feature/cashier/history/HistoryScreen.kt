@@ -41,7 +41,7 @@ fun HistoryScreen(
         )
 
         Spacer(
-            modifier = Modifier.height(Spacing.Standard)
+            modifier = Modifier.height(Spacing.Compact)
         )
 
         Row(
