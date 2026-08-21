@@ -59,6 +59,8 @@ fun PosPreviewScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
+    val canDismiss = !state.isPaymentLoading
+
     LaunchedEffect(key1 = Unit) {
         viewModel.loadPreview(
             customerId = customerId,
@@ -97,9 +99,13 @@ fun PosPreviewScreen(
     }
     AppDialog(
         onDismiss = {
-            viewModel.dismiss()
-            onDismiss()
-        }
+            if (canDismiss) {
+                viewModel.dismiss()
+                onDismiss()
+            }
+        },
+        dismissOnBackPress = canDismiss,
+        dismissOnClickOutside = canDismiss
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
