@@ -91,11 +91,10 @@ fun PosPreviewPartialDetail(
                 onClick = {
                     context.showDatePicker(
                         initialDate = dueDate.toLocalDateOrNull()
-                            ?: LocalDate.now()
+                            ?: LocalDate.now(),
+                        minDate = LocalDate.now()
                     ) { date ->
-                        onDueDateChange(
-                            date.toString()
-                        )
+                        onDueDateChange(date.toString())
                     }
                 },
                 trailingIcon = {

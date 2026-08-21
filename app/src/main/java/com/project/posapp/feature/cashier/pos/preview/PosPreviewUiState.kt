@@ -2,6 +2,8 @@ package com.project.posapp.feature.cashier.pos.preview
 
 import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.model.PosPayment
+import com.project.posapp.utils.extensions.toLocalDateOrNull
+import java.time.LocalDate
 
 data class PosPreviewUiState(
     val isLoading: Boolean = false,
@@ -47,16 +49,25 @@ data class PosPreviewUiState(
         }
     val canContinue: Boolean
         get() {
-            if (preview?.saleId == null || paymentMethod == null) {
+            val total = preview?.totalAfterDiscount
+
+            if (preview?.saleId == null || total == null || paymentMethod == null) {
                 return false
             }
 
             if (paymentSchema == PosPaymentScheme.PARTIAL) {
-                return downPaymentAmount > 0L && !dueDate.isNullOrBlank()
+                val isDownPaymentValid = downPaymentAmount in 1..<total
+
+                val isDueDateValid =
+                    dueDate.toLocalDateOrNull()?.isBefore(LocalDate.now()) == false
+
+                return isDownPaymentValid && isDueDateValid
             }
 
             return when (paymentMethod) {
-                PosPaymentMethod.CASH -> cashReceivedAmount >= paymentAmount
+                PosPaymentMethod.CASH ->
+                    cashReceivedAmount >= paymentAmount
+
                 PosPaymentMethod.QR -> true
             }
         }

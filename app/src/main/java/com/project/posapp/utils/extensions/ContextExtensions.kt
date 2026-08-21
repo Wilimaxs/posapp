@@ -3,12 +3,14 @@ package com.project.posapp.utils.extensions
 import android.app.DatePickerDialog
 import android.content.Context
 import java.time.LocalDate
+import java.time.ZoneId
 
 fun Context.showDatePicker(
     initialDate: LocalDate = LocalDate.now(),
+    minDate: LocalDate? = null,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    DatePickerDialog(
+    val dialog = DatePickerDialog(
         this,
         { _, year, month, day ->
             onDateSelected(
@@ -22,5 +24,14 @@ fun Context.showDatePicker(
         initialDate.year,
         initialDate.monthValue - 1,
         initialDate.dayOfMonth
-    ).show()
+    )
+
+    minDate?.let { date ->
+        dialog.datePicker.minDate = date
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+    }
+
+    dialog.show()
 }
