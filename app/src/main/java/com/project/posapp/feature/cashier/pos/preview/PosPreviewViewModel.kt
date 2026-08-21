@@ -172,6 +172,7 @@ class PosPreviewViewModel @Inject constructor(
         }
     }
 
+    // KHSUSU PAYMENT
     fun payment() {
         val state = _uiState.value
         val saleId = state.preview?.saleId ?: return
@@ -213,6 +214,82 @@ class PosPreviewViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    // KHSUSU BATAL
+    fun requestCancelPreview(
+        resetTransaction: Boolean = false
+    ) {
+        val state = _uiState.value
+
+        if (
+            state.preview?.saleId == null ||
+            state.isLoading ||
+            state.isPaymentLoading ||
+            state.isCancelLoading
+        ) {
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                showCancelConfirmation = true,
+                resetTransactionAfterCancel = resetTransaction,
+                cancelErrorMessage = null
+            )
+        }
+    }
+
+    fun dismissCancelConfirmation() {
+        if (_uiState.value.isCancelLoading) {
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                showCancelConfirmation = false,
+                cancelErrorMessage = null
+            )
+        }
+    }
+
+    fun cancelPreview() {
+        val state = _uiState.value
+        val saleId = state.preview?.saleId ?: return
+
+        if (state.isCancelLoading) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isCancelLoading = true,
+                    cancelErrorMessage = null
+                )
+            }
+
+            repository.cancelCheckoutPreview(saleId)
+                .onSuccess {
+                    countdownJob?.cancel()
+
+                    _uiState.update {
+                        it.copy(
+                            isCancelLoading = false,
+                            showCancelConfirmation = false,
+                            cancelSuccess = true
+                        )
+                    }
+                }
+                .onError { result ->
+                    _uiState.update {
+                        it.copy(
+                            isCancelLoading = false,
+                            cancelErrorMessage = result.message
+                        )
+                    }
+                }
         }
     }
 }

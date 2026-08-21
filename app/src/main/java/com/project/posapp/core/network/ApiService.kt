@@ -10,6 +10,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -40,4 +41,9 @@ interface ApiService {
     suspend fun createPayment(
         @Body body: Map<String, @JvmSuppressWildcards Any?>
     ): Response<ApiResponse<PosPayment>>
+
+    @POST("v1/checkout/preview/{saleId}/cancel")
+    suspend fun cancelCheckoutPreview(
+        @Path("saleId") saleId: Long
+    ): Response<ApiResponse<Unit>>
 }

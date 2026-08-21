@@ -21,6 +21,13 @@ data class PosPreviewUiState(
     val payment: PosPayment? = null,
     val paymentErrorMessage: String? = null,
 
+    // CANCEL PREVIEW
+    val showCancelConfirmation: Boolean = false,
+    val isCancelLoading: Boolean = false,
+    val cancelErrorMessage: String? = null,
+    val cancelSuccess: Boolean = false,
+    val resetTransactionAfterCancel: Boolean = false,
+
     val errorMessage: String? = null
 ) {
     val downPaymentAmount: Long get() = downPayment.toLongOrNull() ?: 0L

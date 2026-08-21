@@ -36,6 +36,7 @@ import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPart
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewPaymentMethode
 import com.project.posapp.feature.cashier.pos.preview.composables.PosPreviewSummary
 import com.project.posapp.utils.composable.AppCashQuickAmount
+import com.project.posapp.utils.composable.AppConfirmationDialog
 import com.project.posapp.utils.composable.AppDialog
 import com.project.posapp.utils.composable.AppForm
 import com.project.posapp.utils.composable.AppResultDialog
@@ -59,13 +60,30 @@ fun PosPreviewScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    val canDismiss = !state.isPaymentLoading
+    val canRequestCancel =
+        !state.isLoading &&
+                !state.isPaymentLoading &&
+                !state.isCancelLoading
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadPreview(
             customerId = customerId,
             items = items
         )
+    }
+
+    LaunchedEffect(state.cancelSuccess) {
+        if (state.cancelSuccess) {
+            val resetTransaction = state.resetTransactionAfterCancel
+
+            viewModel.dismiss()
+
+            if (resetTransaction) {
+                onTransactionReset()
+            } else {
+                onDismiss()
+            }
+        }
     }
 
     state.payment?.let { payment ->
@@ -81,6 +99,21 @@ fun PosPreviewScreen(
         return
     }
 
+    if (state.showCancelConfirmation) {
+        AppConfirmationDialog(
+            title = "Batalkan Pembayaran?",
+            message = "Rincian pembayaran akan dibatalkan dan stok akan dikembalikan.",
+            confirmButtonText = "Ya, Batalkan",
+            dismissButtonText = "Kembali",
+            onConfirm = viewModel::cancelPreview,
+            onDismiss = viewModel::dismissCancelConfirmation,
+            isLoading = state.isCancelLoading,
+            isDestructive = true,
+            errorMessage = state.cancelErrorMessage
+        )
+        return
+    }
+
     state.paymentErrorMessage?.let { message ->
         AppResultDialog(
             type = AppResultType.ERROR,
@@ -90,8 +123,9 @@ fun PosPreviewScreen(
             onPrimaryClick = viewModel::payment,
             secondaryButtonText = "Batal",
             onSecondaryClick = {
-                viewModel.dismiss()
-                onTransactionReset()
+                viewModel.requestCancelPreview(
+                    resetTransaction = true
+                )
             },
             isLoading = state.isPaymentLoading
         )
@@ -99,13 +133,12 @@ fun PosPreviewScreen(
     }
     AppDialog(
         onDismiss = {
-            if (canDismiss) {
-                viewModel.dismiss()
-                onDismiss()
+            if (canRequestCancel) {
+                viewModel.requestCancelPreview()
             }
         },
-        dismissOnBackPress = canDismiss,
-        dismissOnClickOutside = canDismiss
+        dismissOnBackPress = canRequestCancel,
+        dismissOnClickOutside = canRequestCancel
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -226,10 +259,7 @@ fun PosPreviewScreen(
                     PreviewFooter(
                         enabled = state.canContinue,
                         isLoading = state.isPaymentLoading,
-                        onDismiss = {
-                            viewModel.dismiss()
-                            onDismiss()
-                        },
+                        onDismiss = viewModel::requestCancelPreview,
                         onContinue = viewModel::payment
                     )
                 }

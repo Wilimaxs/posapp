@@ -3,6 +3,7 @@ package com.project.posapp.repository
 import com.project.posapp.core.network.ApiService
 import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.core.network.apiSafeCall
+import com.project.posapp.core.network.apiSafeCallNoData
 import com.project.posapp.model.PosCheckoutPreview
 import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.PosPayment
@@ -84,6 +85,14 @@ class PosRepository @Inject constructor(
 
         return apiSafeCall {
             apiService.createPayment(body)
+        }
+    }
+
+    suspend fun cancelCheckoutPreview(
+        saleId: Long
+    ): NetworkResult<Unit> {
+        return apiSafeCallNoData {
+            apiService.cancelCheckoutPreview(saleId)
         }
     }
 }
