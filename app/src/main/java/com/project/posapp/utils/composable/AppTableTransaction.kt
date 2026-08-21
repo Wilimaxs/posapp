@@ -48,6 +48,9 @@ fun TransactionDetailTable(
     totalValue: String? = null,
     totalValueColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.primary,
 ) {
+    val hasSummary = subtotalLabel != null && subtotalValue != null ||
+            showDiscount && discountLabel != null && discountValue != null ||
+            totalLabel != null && totalValue != null
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -79,48 +82,50 @@ fun TransactionDetailTable(
             )
         }
 
-        HorizontalDivider(
-            modifier = Modifier.padding(top = Spacing.Tight),
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
-
-        if (subtotalLabel != null && subtotalValue != null) {
-            TransactionSummaryRow(
-                label = subtotalLabel,
-                value = subtotalValue,
-                valueColor = MaterialTheme.colorScheme.onSurface
+        if (hasSummary) {
+            HorizontalDivider(
+                modifier = Modifier.padding(top = Spacing.Tight),
+                color = MaterialTheme.colorScheme.outlineVariant
             )
-        }
 
-        if (showDiscount && discountLabel != null && discountValue != null) {
-            TransactionSummaryRow(
-                label = discountLabel,
-                value = discountValue,
-                valueColor = MaterialTheme.colorScheme.primary
-            )
-        }
+            if (subtotalLabel != null && subtotalValue != null) {
+                TransactionSummaryRow(
+                    label = subtotalLabel,
+                    value = subtotalValue,
+                    valueColor = MaterialTheme.colorScheme.onSurface
+                )
+            }
 
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = Spacing.Micro),
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
+            if (showDiscount && discountLabel != null && discountValue != null) {
+                TransactionSummaryRow(
+                    label = discountLabel,
+                    value = discountValue,
+                    valueColor = MaterialTheme.colorScheme.primary
+                )
+            }
 
-        if (totalLabel != null && totalValue != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = totalLabel,
-                    style = MaterialTheme.typography.titleLarge
+            if (totalLabel != null && totalValue != null) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = Spacing.Micro),
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
 
-                Text(
-                    text = totalValue,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = totalValueColor
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = totalLabel,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Text(
+                        text = totalValue,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = totalValueColor
+                    )
+                }
             }
         }
     }

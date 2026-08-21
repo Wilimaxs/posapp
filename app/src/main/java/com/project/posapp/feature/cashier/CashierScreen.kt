@@ -14,8 +14,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.project.posapp.feature.cashier.component.CashierHeader
 import com.project.posapp.feature.cashier.component.CashierSidebar
+import com.project.posapp.feature.cashier.history.HistoryScreen
 import com.project.posapp.feature.cashier.pos.PosScreen
-import com.project.posapp.feature.cashier.history.TransactionScreen
 import com.project.posapp.route.Screen
 
 @Composable
@@ -63,7 +63,7 @@ fun CashierScreen() {
                 }
 
                 composable(Screen.HISTORY.route) {
-                    TransactionScreen()
+                    HistoryScreen()
                 }
             }
         }

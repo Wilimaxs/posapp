@@ -1,6 +1,8 @@
 package com.project.posapp.utils.extensions
 
 import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -29,6 +31,36 @@ fun String?.toLongDisplayDate(
         ?.format(
             DateTimeFormatter.ofPattern(
                 "dd MMMM yyyy",
+                indonesiaLocale
+            )
+        )
+        ?: fallback
+
+private fun String?.toZonedDateTimeOrNull() =
+    this?.let { value ->
+        runCatching {
+            OffsetDateTime
+                .parse(value)
+                .atZoneSameInstant(ZoneId.systemDefault())
+        }.getOrNull()
+    }
+
+fun String?.toDisplayTime(
+    fallback: String = "-"
+): String =
+    toZonedDateTimeOrNull()
+        ?.format(
+            DateTimeFormatter.ofPattern("HH.mm")
+        )
+        ?: fallback
+
+fun String?.toLongDisplayDateTime(
+    fallback: String = "-"
+): String =
+    toZonedDateTimeOrNull()
+        ?.format(
+            DateTimeFormatter.ofPattern(
+                "dd MMMM yyyy, HH.mm",
                 indonesiaLocale
             )
         )

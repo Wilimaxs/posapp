@@ -5,10 +5,9 @@ enum class Screen(
     val title: String
 ) {
     POS(route = "POS", title = "Point of Sale"),
-    HISTORY(route = "HISTORY", title = "History"),
+    HISTORY(route = "HISTORY", title = "Transaksi"),
 //    RECEIVABLE("receivable", "Piutang"),
-//    RETURN("return", "Retur"),
-//    SHIFT("shift", "Shift")
+
     ;
 
     companion object {
