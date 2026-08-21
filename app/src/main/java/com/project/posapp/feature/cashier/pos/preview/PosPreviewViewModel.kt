@@ -177,7 +177,8 @@ class PosPreviewViewModel @Inject constructor(
         val state = _uiState.value
         val saleId = state.preview?.saleId ?: return
         val paymentMethod = state.paymentMethod ?: return
-        if (state.isPaymentLoading) {
+
+        if (!state.canContinue || state.isPaymentLoading) {
             return
         }
 

@@ -51,23 +51,20 @@ data class PosPreviewUiState(
         get() {
             val total = preview?.totalAfterDiscount
 
-            if (preview?.saleId == null || total == null || paymentMethod == null) {
+            if (preview?.saleId == null || total == null || paymentMethod == null || remainingSeconds == 0L) {
                 return false
             }
 
             if (paymentSchema == PosPaymentScheme.PARTIAL) {
                 val isDownPaymentValid = downPaymentAmount in 1..<total
 
-                val isDueDateValid =
-                    dueDate.toLocalDateOrNull()?.isBefore(LocalDate.now()) == false
+                val isDueDateValid = dueDate.toLocalDateOrNull()?.isBefore(LocalDate.now()) == false
 
                 return isDownPaymentValid && isDueDateValid
             }
 
             return when (paymentMethod) {
-                PosPaymentMethod.CASH ->
-                    cashReceivedAmount >= paymentAmount
-
+                PosPaymentMethod.CASH -> cashReceivedAmount >= paymentAmount
                 PosPaymentMethod.QR -> true
             }
         }
