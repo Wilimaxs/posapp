@@ -1,3 +1,10 @@
+/*
+ * Dibuat oleh: Wilimaxs
+ * Dibuat pada: 22 Agustus 2026
+ * Tujuan:
+ * Menjadi container dialog global dengan ukuran, latar belakang,
+ * border, dan perilaku dismiss yang konsisten.
+ */
 package com.project.posapp.utils.composable
 
 import androidx.compose.foundation.background
@@ -13,10 +20,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.project.posapp.core.theme.PosAppTheme
 import com.project.posapp.core.theme.Radius
 
 @Composable
@@ -63,6 +72,16 @@ fun AppDialog(
             ) {
                 content()
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1000, heightDp = 600)
+@Composable
+private fun AppDialogPreview() {
+    PosAppTheme {
+        AppDialog(onDismiss = {}) {
+            AppBadge(text = "Isi dialog")
         }
     }
 }

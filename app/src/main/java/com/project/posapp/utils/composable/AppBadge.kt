@@ -1,3 +1,10 @@
+/*
+ * Dibuat oleh: Wilimaxs
+ * Dibuat pada: 22 Agustus 2026
+ * Tujuan:
+ * Menampilkan label atau status singkat dengan warna, border,
+ * bentuk, dan konten yang dapat disesuaikan.
+ */
 package com.project.posapp.utils.composable
 
 import androidx.compose.foundation.background
@@ -14,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Radius
@@ -66,4 +74,13 @@ fun AppBadge(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AppBadgePreview() {
+    AppBadge(
+        text = "Aktif",
+        modifier = Modifier.padding(all = Spacing.Standard)
+    )
 }

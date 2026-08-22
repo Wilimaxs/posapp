@@ -1,3 +1,10 @@
+/*
+ * Dibuat oleh: Wilimaxs
+ * Dibuat pada: 22 Agustus 2026
+ * Tujuan:
+ * Menampilkan dialog konfirmasi yang konsisten untuk tindakan
+ * biasa maupun destruktif
+ */
 package com.project.posapp.utils.composable
 
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +16,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.project.posapp.core.theme.PosAppTheme
 import com.project.posapp.core.theme.Spacing
 
 @Composable
@@ -41,7 +50,7 @@ fun AppConfirmationDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacing.Section),
+                .padding(all = Spacing.Section),
             verticalArrangement = Arrangement.spacedBy(Spacing.Large)
         ) {
             Column(
@@ -94,5 +103,20 @@ fun AppConfirmationDialog(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 1000)
+@Composable
+private fun AppConfirmationDialogPreview() {
+    PosAppTheme {
+        AppConfirmationDialog(
+            title = "Batalkan Transaksi?",
+            message = "Transaksi yang dibatalkan tidak dapat dilanjutkan.",
+            confirmButtonText = "Ya, Batalkan",
+            onConfirm = {},
+            onDismiss = {},
+            isDestructive = true
+        )
     }
 }

@@ -1,3 +1,10 @@
+/*
+ * Dibuat oleh: Wilimaxs
+ * Dibuat pada: 22 Agustus 2026
+ * Tujuan:
+ * Menampilkan tombol pembuka filter atau dropdown dengan ukuran
+ * dan susunan ikon yang konsisten.
+ */
 package com.project.posapp.utils.composable
 
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.project.posapp.core.theme.PosAppTheme
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
 
@@ -68,5 +77,16 @@ fun AppFilterButton(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AppFilterButtonPreview() {
+    PosAppTheme {
+        AppFilterButton(
+            text = "Semua status",
+            onClick = {}
+        )
     }
 }
