@@ -2,7 +2,6 @@ package com.project.posapp.feature.cashier.history.composables
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,11 +12,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,10 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +33,7 @@ import com.project.posapp.feature.cashier.history.HistoryDateFilter
 import com.project.posapp.feature.cashier.history.HistoryPaymentStatus
 import com.project.posapp.feature.cashier.history.HistoryUiState
 import com.project.posapp.utils.composable.AppFilterButton
+import com.project.posapp.utils.composable.AppFilterOption
 import com.project.posapp.utils.composable.AppForm
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.extensions.showDatePicker
@@ -61,15 +54,29 @@ fun HistoryFilterBar(
 ) {
 
     val focusManager = LocalFocusManager.current
+
+    val options: List<AppFilterOption<HistoryPaymentStatus?>> =
+        listOf(
+            AppFilterOption<HistoryPaymentStatus?>(
+                value = null,
+                text = "Semua status"
+            )
+        ) + HistoryPaymentStatus.entries.map { status ->
+            AppFilterOption(
+                value = status,
+                text = status.label
+            )
+        }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .border(
-                1.dp,
-                MaterialTheme.colorScheme.outlineVariant,
-                RoundedCornerShape(Radius.Medium)
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(size = Radius.Medium)
             )
-            .padding(Spacing.Standard),
+            .padding(all = Spacing.Standard),
         verticalArrangement = Arrangement.spacedBy(
             Spacing.Tight
         )
@@ -128,10 +135,12 @@ fun HistoryFilterBar(
                 onApplyCustomFilter = onApplyCustomFilter
             )
 
-            HistoryStatusFilterMenu(
+            AppFilterButton(
                 modifier = Modifier.weight(1f),
-                selectedStatus = state.paymentStatus,
-                onStatusChange = onPaymentStatusChange
+                text = state.paymentStatus?.label ?: "Semua status",
+                options = options,
+                selected = state.paymentStatus,
+                onSelected = onPaymentStatusChange,
             )
         }
     }
@@ -139,67 +148,35 @@ fun HistoryFilterBar(
 
 @Composable
 private fun HistoryDateFilterMenu(
-    modifier: Modifier = Modifier,
     state: HistoryUiState,
     onDateFilterChange: (HistoryDateFilter) -> Unit,
     onStartDateChange: (String) -> Unit,
     onEndDateChange: (String) -> Unit,
-    onApplyCustomFilter: () -> Unit
+    onApplyCustomFilter: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-
     val context = LocalContext.current
 
-    Box(modifier = modifier) {
-        AppFilterButton(
-            text = state.dateFilter.label,
-            icon = Icons.Outlined.CalendarMonth,
-            onClick = {
-                expanded = true
-            },
-            modifier = Modifier.width(180.dp)
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            },
-            modifier = Modifier.width(360.dp)
-        ) {
-            HistoryDateFilter.entries.forEach { filter ->
-                DropdownMenuItem(
-                    text = {
-                        Text(filter.label)
-                    },
-                    onClick = {
-                        onDateFilterChange(filter)
-
-                        if (filter != HistoryDateFilter.CUSTOM) {
-                            expanded = false
-                        }
-                    },
-                    trailingIcon = if (state.dateFilter == filter) {
-                        {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    } else {
-                        null
-                    }
-                )
-            }
-
+    AppFilterButton(
+        text = state.dateFilter.label,
+        icon = Icons.Outlined.CalendarMonth,
+        options = HistoryDateFilter.entries.map { filter ->
+            AppFilterOption(
+                value = filter,
+                text = filter.label,
+                dismissOnSelect = filter != HistoryDateFilter.CUSTOM
+            )
+        },
+        selected = state.dateFilter,
+        onSelected = onDateFilterChange,
+        modifier = modifier,
+        dropdownModifier = Modifier.width(360.dp),
+        customDropdownContent = { dismiss ->
             if (state.dateFilter == HistoryDateFilter.CUSTOM) {
                 HorizontalDivider()
 
                 Column(
-                    modifier = Modifier.padding(Spacing.Standard),
+                    modifier = Modifier.padding(all = Spacing.Standard),
                     verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
                 ) {
                     Text(
@@ -208,9 +185,7 @@ private fun HistoryDateFilterMenu(
                     )
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(
-                            Spacing.Tight
-                        )
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.Tight)
                     ) {
                         AppForm(
                             value = state.startDate.toDisplayDate(),
@@ -220,11 +195,11 @@ private fun HistoryDateFilterMenu(
                             readOnly = true,
                             onClick = {
                                 context.showDatePicker(
-                                    initialDate = state.startDate
-                                        .toLocalDateOrNull()
-                                        ?: LocalDate.now()
+                                    initialDate = state.startDate.toLocalDateOrNull() ?: LocalDate.now()
                                 ) {
-                                    onStartDateChange(it.toString())
+                                    onStartDateChange(
+                                        it.toString()
+                                    )
                                 }
                             },
                             minHeight = 48.dp,
@@ -238,17 +213,15 @@ private fun HistoryDateFilterMenu(
                             placeholder = "Pilih tanggal",
                             readOnly = true,
                             onClick = {
-                                val startDate =
-                                    state.startDate.toLocalDateOrNull()
+                                val startDate = state.startDate.toLocalDateOrNull()
 
                                 context.showDatePicker(
-                                    initialDate = state.endDate
-                                        .toLocalDateOrNull()
-                                        ?: startDate
-                                        ?: LocalDate.now(),
+                                    initialDate = state.endDate.toLocalDateOrNull() ?: startDate ?: LocalDate.now(),
                                     minDate = startDate
                                 ) {
-                                    onEndDateChange(it.toString())
+                                    onEndDateChange(
+                                        it.toString()
+                                    )
                                 }
                             },
                             minHeight = 48.dp,
@@ -266,17 +239,19 @@ private fun HistoryDateFilterMenu(
                                 onDateFilterChange(
                                     HistoryDateFilter.TODAY
                                 )
-                                expanded = false
+                                dismiss()
                             }
                         ) {
-                            Text("Reset")
+                            Text(
+                                text = "Reset"
+                            )
                         }
 
                         PrimaryButton(
                             text = "Terapkan",
                             onClick = {
                                 onApplyCustomFilter()
-                                expanded = false
+                                dismiss()
                             },
                             enabled = state.canApplyCustomFilter,
                             fillMaxWidth = false,
@@ -286,75 +261,5 @@ private fun HistoryDateFilterMenu(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun HistoryStatusFilterMenu(
-    modifier: Modifier = Modifier,
-    selectedStatus: HistoryPaymentStatus?,
-    onStatusChange: (HistoryPaymentStatus?) -> Unit
-) {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-
-    Box(modifier = modifier) {
-        AppFilterButton(
-            text = selectedStatus?.label ?: "Semua status",
-            onClick = {
-                expanded = true
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-            DropdownMenuItem(
-                text = {
-                    Text("Semua status")
-                },
-                onClick = {
-                    onStatusChange(null)
-                    expanded = false
-                },
-                trailingIcon = if (selectedStatus == null) {
-                    {
-                        Icon(
-                            imageVector = Icons.Outlined.Check,
-                            contentDescription = null
-                        )
-                    }
-                } else {
-                    null
-                }
-            )
-
-            HistoryPaymentStatus.entries.forEach { status ->
-                DropdownMenuItem(
-                    text = {
-                        Text(status.label)
-                    },
-                    onClick = {
-                        onStatusChange(status)
-                        expanded = false
-                    },
-                    trailingIcon = if (selectedStatus == status) {
-                        {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = null
-                            )
-                        }
-                    } else {
-                        null
-                    }
-                )
-            }
-        }
-    }
+    )
 }
