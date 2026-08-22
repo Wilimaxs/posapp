@@ -9,6 +9,9 @@ import com.project.posapp.model.PosCustomer
 import com.project.posapp.model.PosPayment
 import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
+import com.project.posapp.model.Receivable
+import com.project.posapp.model.ReceivableDetail
+import com.project.posapp.model.ReceivableSummary
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -69,4 +72,22 @@ interface ApiService {
     suspend fun getHistoryDetail(
         @Path("invoiceNumber") invoiceNumber: String
     ): Response<ApiResponse<HistoryDetail>>
+
+    // PIUTANG API
+    @GET("v1/receivables/summary")
+    suspend fun getReceivableSummary(
+    ): Response<ApiResponse<ReceivableSummary>>
+
+    @GET("v1/receivables")
+    suspend fun getReceivables(
+        @Query("page") page: Int = 1,
+        @Query("search") search: String? = null,
+        @Query("due_status") dueStatus: String? = null,
+        @Query("sort") sort: String? = null
+    ): Response<ApiResponse<List<Receivable>>>
+
+    @GET("v1/receivables/{saleId}")
+    suspend fun getReceivableDetail(
+        @Path("saleId") saleId: Long
+    ): Response<ApiResponse<ReceivableDetail>>
 }
