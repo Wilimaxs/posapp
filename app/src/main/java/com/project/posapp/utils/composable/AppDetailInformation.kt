@@ -18,8 +18,7 @@ fun AppDetailInformation(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement =
-            Arrangement.spacedBy(Spacing.Micro)
+        verticalArrangement = Arrangement.spacedBy(Spacing.Micro)
     ) {
         Text(
             text = label,

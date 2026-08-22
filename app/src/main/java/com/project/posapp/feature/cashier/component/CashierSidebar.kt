@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.HistoryEdu
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PointOfSale
@@ -33,6 +34,10 @@ private val menuItems = listOf(
     CashierMenuItem(
         screen = Screen.HISTORY,
         icon = Icons.Outlined.HistoryEdu
+    ),
+    CashierMenuItem(
+        screen = Screen.RECEIVABLE,
+        icon = Icons.Outlined.AccountBalanceWallet
     )
 )
 

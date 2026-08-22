@@ -6,9 +6,7 @@ enum class Screen(
 ) {
     POS(route = "POS", title = "Point of Sale"),
     HISTORY(route = "HISTORY", title = "Transaksi"),
-//    RECEIVABLE("receivable", "Piutang"),
-
-    ;
+    RECEIVABLE(route = "Piutang", title = "Piutang");
 
     companion object {
         fun fromRoute(route: String?): Screen =

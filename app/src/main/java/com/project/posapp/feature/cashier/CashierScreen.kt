@@ -16,6 +16,7 @@ import com.project.posapp.feature.cashier.component.CashierHeader
 import com.project.posapp.feature.cashier.component.CashierSidebar
 import com.project.posapp.feature.cashier.history.HistoryScreen
 import com.project.posapp.feature.cashier.pos.PosScreen
+import com.project.posapp.feature.cashier.receivable.ReceivableScreen
 import com.project.posapp.route.Screen
 
 @Composable
@@ -64,6 +65,10 @@ fun CashierScreen() {
 
                 composable(Screen.HISTORY.route) {
                     HistoryScreen()
+                }
+
+                composable(Screen.RECEIVABLE.route) {
+                    ReceivableScreen()
                 }
             }
         }
