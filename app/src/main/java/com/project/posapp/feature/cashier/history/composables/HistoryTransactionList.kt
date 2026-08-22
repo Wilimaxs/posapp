@@ -36,7 +36,7 @@ import com.project.posapp.core.theme.Success
 import com.project.posapp.core.theme.Warning
 import com.project.posapp.feature.cashier.history.HistoryUiState
 import com.project.posapp.feature.cashier.history.toHistoryCustomerType
-import com.project.posapp.feature.cashier.history.toHistoryPaymentMethod
+import com.project.posapp.utils.extensions.toPaymentMethodLabel
 import com.project.posapp.feature.cashier.history.toHistoryPaymentStatus
 import com.project.posapp.model.HistoryTransaction
 import com.project.posapp.utils.composable.AppBadge
@@ -219,7 +219,7 @@ private fun HistoryTransactionItem(
                         append(" • ")
                         append(
                             transaction.paymentMethod
-                                .toHistoryPaymentMethod()
+                                .toPaymentMethodLabel()
                         )
                     },
                     style = MaterialTheme.typography.bodySmall,

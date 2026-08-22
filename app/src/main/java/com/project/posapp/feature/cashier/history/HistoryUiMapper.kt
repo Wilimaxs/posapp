@@ -4,13 +4,6 @@ import com.project.posapp.model.HistoryItem
 import com.project.posapp.utils.composable.TransactionTableItem
 import com.project.posapp.utils.extensions.toRupiah
 
-internal fun String?.toHistoryPaymentMethod(): String =
-    when (this?.lowercase()) {
-        "cash" -> "Tunai"
-        "qr", "qris" -> "QR"
-        else -> "-"
-    }
-
 internal fun String?.toHistoryCustomerType(): String =
     when (this?.lowercase()) {
         "member" -> "Member"

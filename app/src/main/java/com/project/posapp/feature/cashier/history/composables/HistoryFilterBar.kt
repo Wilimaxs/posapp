@@ -4,10 +4,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -25,7 +22,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,6 +40,7 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.history.HistoryDateFilter
 import com.project.posapp.feature.cashier.history.HistoryPaymentStatus
 import com.project.posapp.feature.cashier.history.HistoryUiState
+import com.project.posapp.utils.composable.AppFilterButton
 import com.project.posapp.utils.composable.AppForm
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.extensions.showDatePicker
@@ -156,7 +153,7 @@ private fun HistoryDateFilterMenu(
     val context = LocalContext.current
 
     Box(modifier = modifier) {
-        HistoryFilterButton(
+        AppFilterButton(
             text = state.dateFilter.label,
             icon = Icons.Outlined.CalendarMonth,
             onClick = {
@@ -303,7 +300,7 @@ private fun HistoryStatusFilterMenu(
     }
 
     Box(modifier = modifier) {
-        HistoryFilterButton(
+        AppFilterButton(
             text = selectedStatus?.label ?: "Semua status",
             onClick = {
                 expanded = true
@@ -358,50 +355,6 @@ private fun HistoryStatusFilterMenu(
                     }
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun HistoryFilterButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: androidx.compose.ui.graphics.vector.ImageVector? = null
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = modifier.height(48.dp),
-        shape = RoundedCornerShape(Radius.Default),
-        contentPadding = PaddingValues(
-            horizontal = Spacing.Standard
-        )
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(
-                    Spacing.Tight
-                ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                icon?.let {
-                    Icon(
-                        imageVector = it,
-                        contentDescription = null
-                    )
-                }
-
-                Text(text)
-            }
-
-            Icon(
-                imageVector = Icons.Outlined.ExpandMore,
-                contentDescription = null
-            )
         }
     }
 }

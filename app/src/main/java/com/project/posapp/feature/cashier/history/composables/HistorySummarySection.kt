@@ -21,6 +21,7 @@ import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.model.HistorySummary
 import com.project.posapp.utils.composable.AppBadge
+import com.project.posapp.utils.composable.AppSummaryCard
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.extensions.toRupiah
 
@@ -111,56 +112,17 @@ fun HistorySummarySection(
                 horizontalArrangement = Arrangement.spacedBy(Spacing.Standard)
             ) {
                 cards.forEach { card ->
-                    HistorySummaryCard(
-                        data = card,
-                        modifier = Modifier.weight(1f)
+                    AppSummaryCard(
+                        title = card.title,
+                        value = card.value,
+                        modifier = Modifier.weight(1f),
+                        trailingContent = {
+                            AppBadge(text = "Hari ini")
+                        }
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun HistorySummaryCard(
-    data: SummaryCardData,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .height(96.dp)
-            .background(
-                MaterialTheme.colorScheme.surfaceContainerLowest,
-                RoundedCornerShape(Radius.Medium)
-            )
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.outlineVariant,
-                RoundedCornerShape(Radius.Medium)
-            )
-            .padding(Spacing.Compact),
-        verticalArrangement = Arrangement.spacedBy(
-            Spacing.Tight
-        )
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = data.title,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            AppBadge(text = "Hari ini")
-        }
-
-        Text(
-            text = data.value,
-            style = MaterialTheme.typography.titleLarge
-        )
     }
 }
 

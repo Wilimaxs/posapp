@@ -17,18 +17,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.core.theme.Success
 import com.project.posapp.core.theme.Warning
-import com.project.posapp.feature.cashier.history.toHistoryPaymentMethod
+import com.project.posapp.utils.extensions.toPaymentMethodLabel
 import com.project.posapp.feature.cashier.history.toHistoryPaymentStatus
 import com.project.posapp.feature.cashier.history.toTransactionTableItem
 import com.project.posapp.model.HistoryDetail
 import com.project.posapp.utils.composable.AppBadge
+import com.project.posapp.utils.composable.AppDetailInformation
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.composable.TransactionDetailTable
@@ -243,20 +243,20 @@ private fun HistoryDetailInformation(
             Spacing.Large
         )
     ) {
-        DetailInformation(
+        AppDetailInformation(
             label = "Kasir",
             value = detail.user?.name ?: "-",
             modifier = Modifier.weight(1f)
         )
 
-        DetailInformation(
+        AppDetailInformation(
             label = "Metode pembayaran",
             value = detail.payment?.method
-                .toHistoryPaymentMethod(),
+                .toPaymentMethodLabel(),
             modifier = Modifier.weight(1f)
         )
 
-        DetailInformation(
+        AppDetailInformation(
             label = "Pelanggan",
             value = detail.customer?.let {
                 buildString {
@@ -268,32 +268,6 @@ private fun HistoryDetailInformation(
                 }
             } ?: "Guest",
             modifier = Modifier.weight(1.4f)
-        )
-    }
-}
-
-@Composable
-private fun DetailInformation(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(
-            Spacing.Micro
-        )
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
