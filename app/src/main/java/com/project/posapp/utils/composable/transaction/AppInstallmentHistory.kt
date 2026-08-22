@@ -1,3 +1,10 @@
+/*
+ * Dibuat oleh: Wilimaxs
+ * Dibuat pada: 22 Agustus 2026
+ * Tujuan:
+ * Menampilkan riwayat pembayaran berupa uang muka dan daftar cicilan.
+ * Digunakan bersama oleh fitur History dan Piutang.
+ */
 package com.project.posapp.utils.composable.transaction
 
 import androidx.compose.foundation.background
@@ -19,6 +26,7 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.core.theme.Spacing
@@ -30,6 +38,7 @@ data class InstallmentHistoryItem(
     val metadata: String
 )
 
+// Reusable Utama
 @Composable
 fun AppInstallmentHistory(
     initialPayment: InstallmentHistoryItem,
@@ -40,8 +49,7 @@ fun AppInstallmentHistory(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement =
-            Arrangement.spacedBy(Spacing.Standard)
+        verticalArrangement = Arrangement.spacedBy(Spacing.Standard)
     ) {
         Text(
             text = title,
@@ -59,17 +67,15 @@ fun AppInstallmentHistory(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        RoundedCornerShape(Radius.Default)
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        shape = RoundedCornerShape(size = Radius.Default)
                     )
                     .border(
                         width = 1.dp,
-                        color =
-                            MaterialTheme.colorScheme.outlineVariant,
-                        shape =
-                            RoundedCornerShape(Radius.Default)
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(size = Radius.Default)
                     )
-                    .padding(Spacing.Standard),
+                    .padding(all = Spacing.Standard),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -83,14 +89,14 @@ fun AppInstallmentHistory(
     }
 }
 
+// Private Pembuatan komponen
 @Composable
 private fun InstallmentRow(
     item: InstallmentHistoryItem
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement =
-            Arrangement.spacedBy(Spacing.Standard),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.Standard),
         verticalAlignment = Alignment.Top
     ) {
         Column(
@@ -100,12 +106,6 @@ private fun InstallmentRow(
             Box(
                 modifier = Modifier
                     .size(14.dp)
-                    .background(
-                        MaterialTheme
-                            .colorScheme
-                            .surfaceContainerLowest,
-                        CircleShape
-                    )
                     .border(
                         width = 2.dp,
                         color = MaterialTheme.colorScheme.primary,
@@ -123,17 +123,16 @@ private fun InstallmentRow(
             modifier = Modifier
                 .weight(1f)
                 .background(
-                    MaterialTheme.colorScheme.surfaceContainerLow,
-                    RoundedCornerShape(Radius.Default)
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    shape = RoundedCornerShape(size = Radius.Default)
                 )
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(Radius.Default)
+                    shape = RoundedCornerShape(size = Radius.Default)
                 )
-                .padding(Spacing.Standard),
-            verticalArrangement =
-                Arrangement.spacedBy(Spacing.Micro)
+                .padding(all = Spacing.Standard),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Micro)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -143,13 +142,11 @@ private fun InstallmentRow(
                     text = item.title,
                     style = MaterialTheme.typography.titleSmall
                 )
-
                 Text(
                     text = item.amount.toRupiah(),
                     style = MaterialTheme.typography.titleSmall
                 )
             }
-
             Text(
                 text = item.metadata,
                 style = MaterialTheme.typography.bodySmall,
@@ -157,4 +154,28 @@ private fun InstallmentRow(
             )
         }
     }
+}
+
+@Preview(
+    name = "App Installment History",
+    showBackground = true,
+    widthDp = 600
+)
+@Composable
+private fun AppInstallmentHistoryPreview() {
+    AppInstallmentHistory(
+        initialPayment = InstallmentHistoryItem(
+            title = "Uang Muka (DP)",
+            amount = 150_000,
+            metadata = "5 Agustus 2026, 14:15 • Tunai • Kasir: Dian Pratama"
+        ),
+        installments = listOf(
+            InstallmentHistoryItem(
+                title = "Cicilan kedua",
+                amount = 50_000,
+                metadata = "10 Agustus 2026, 09:30 • Kasir: Dian Pratama"
+            )
+        ),
+        modifier = Modifier.padding(all = 16.dp)
+    )
 }
