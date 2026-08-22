@@ -28,7 +28,7 @@ import com.project.posapp.feature.cashier.history.toHistoryPaymentStatus
 import com.project.posapp.feature.cashier.history.toTransactionTableItem
 import com.project.posapp.model.HistoryDetail
 import com.project.posapp.utils.composable.AppBadge
-import com.project.posapp.utils.composable.AppDetailInformation
+import com.project.posapp.utils.composable.transaction.AppDetailInformation
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.composable.TransactionDetailTable

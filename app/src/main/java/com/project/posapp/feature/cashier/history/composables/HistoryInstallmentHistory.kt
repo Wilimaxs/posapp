@@ -3,8 +3,8 @@ package com.project.posapp.feature.cashier.history.composables
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.project.posapp.model.HistoryDetail
-import com.project.posapp.utils.composable.AppInstallmentHistory
-import com.project.posapp.utils.composable.InstallmentHistoryItem
+import com.project.posapp.utils.composable.transaction.AppInstallmentHistory
+import com.project.posapp.utils.composable.transaction.InstallmentHistoryItem
 import com.project.posapp.utils.extensions.toLongDisplayDateTime
 import com.project.posapp.utils.extensions.toPaymentMethodLabel
 

@@ -1,4 +1,4 @@
-package com.project.posapp.utils.composable
+package com.project.posapp.utils.composable.transaction
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

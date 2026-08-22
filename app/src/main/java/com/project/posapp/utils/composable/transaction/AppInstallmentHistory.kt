@@ -1,4 +1,4 @@
-package com.project.posapp.utils.composable
+package com.project.posapp.utils.composable.transaction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

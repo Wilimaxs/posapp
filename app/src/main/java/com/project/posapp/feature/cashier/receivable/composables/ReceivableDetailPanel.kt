@@ -28,10 +28,10 @@ import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.receivable.toReceivableDueStatus
 import com.project.posapp.model.ReceivableDetail
 import com.project.posapp.utils.composable.AppBadge
-import com.project.posapp.utils.composable.AppDetailInformation
-import com.project.posapp.utils.composable.AppInstallmentHistory
+import com.project.posapp.utils.composable.transaction.AppDetailInformation
+import com.project.posapp.utils.composable.transaction.AppInstallmentHistory
 import com.project.posapp.utils.composable.AppState
-import com.project.posapp.utils.composable.InstallmentHistoryItem
+import com.project.posapp.utils.composable.transaction.InstallmentHistoryItem
 import com.project.posapp.utils.composable.PrimaryButton
 import com.project.posapp.utils.extensions.toLongDisplayDate
 import com.project.posapp.utils.extensions.toLongDisplayDateFromDateTime
