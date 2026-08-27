@@ -37,38 +37,29 @@ fun AppForm(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-
     label: String? = null,
     labelHelper: String? = null,
     placeholder: String = "",
-
     required: Boolean = false,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     onClick: (() -> Unit)? = null,
-
     isPassword: Boolean = false,
     singleLine: Boolean = true,
     minLines: Int = 1,
     maxLines: Int = if (singleLine) 1 else 5,
     maxLength: Int? = null,
-
     prefixText: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
-
     errorMessage: String? = null,
-
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLowest,
     minHeight: Dp = 56.dp
 ) {
-    var passwordVisible by remember {
-        mutableStateOf(false)
-    }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier,
@@ -107,18 +98,13 @@ fun AppForm(
             OutlinedTextField(
                 value = value,
                 onValueChange = { newValue ->
-                    if (
-                        maxLength == null ||
-                        newValue.length <= maxLength
-                    ) {
+                    if (maxLength == null || newValue.length <= maxLength) {
                         onValueChange(newValue)
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .defaultMinSize(
-                        minHeight = minHeight
-                    ),
+                    .defaultMinSize(minHeight = minHeight),
                 enabled = enabled,
                 readOnly = readOnly,
                 singleLine = singleLine,
@@ -164,7 +150,6 @@ fun AppForm(
                     }
 
                     trailingIcon != null -> trailingIcon
-
                     else -> null
                 },
                 visualTransformation = if (
@@ -188,22 +173,15 @@ fun AppForm(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = containerColor,
                     unfocusedContainerColor = containerColor,
-                    disabledContainerColor =
-                        MaterialTheme.colorScheme.surfaceContainerHigh
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 )
             )
 
-            if (
-                enabled &&
-                readOnly &&
-                onClick != null
-            ) {
+            if (enabled && readOnly && onClick != null) {
                 Box(
                     modifier = Modifier
                         .matchParentSize()
-                        .clickable(
-                            onClick = onClick
-                        )
+                        .clickable(onClick = onClick)
                 )
             }
         }

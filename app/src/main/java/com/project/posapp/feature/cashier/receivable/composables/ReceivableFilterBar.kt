@@ -111,7 +111,7 @@ fun ReceivableFilterBar(
                 options = options,
                 selected = state.dueStatus,
                 onSelected = onDueStatusChange,
-                modifier = modifier.weight(1f)
+                modifier = Modifier.weight(1f)
             )
 
             AppFilterButton(
@@ -124,7 +124,7 @@ fun ReceivableFilterBar(
                 },
                 selected = state.sort,
                 onSelected = onSortChange,
-                modifier = modifier.weight(1f)
+                modifier = Modifier.weight(1f)
             )
         }
     }
