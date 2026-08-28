@@ -38,7 +38,7 @@ fun AppDetailInformation(
     labelStyle: TextStyle = MaterialTheme.typography.bodySmall,
     valueColor: Color = MaterialTheme.colorScheme.onSurface,
     valueStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(Spacing.Tight)
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(Spacing.Tight),
 ) {
     val content: @Composable () -> Unit = {
         Text(

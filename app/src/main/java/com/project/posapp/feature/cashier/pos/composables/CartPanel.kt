@@ -34,6 +34,8 @@ import com.project.posapp.model.PosProduct
 import com.project.posapp.core.theme.Radius
 import com.project.posapp.utils.composable.AppState
 import com.project.posapp.utils.composable.PrimaryButton
+import com.project.posapp.utils.composable.transaction.AppDetailInformation
+import com.project.posapp.utils.composable.transaction.AppDetailInformationLayout
 import com.project.posapp.utils.extensions.toRupiah
 
 @Composable
@@ -51,17 +53,11 @@ fun CartPanel(
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = Spacing.Large),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Keranjang (${state.cartCount})",
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
+        Text(
+            modifier = Modifier.padding(all = Spacing.Large),
+            text = "Keranjang (${state.cartCount})",
+            style = MaterialTheme.typography.titleLarge
+        )
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
@@ -99,25 +95,20 @@ fun CartPanel(
         Column(
             modifier = Modifier.padding(all = Spacing.Standard)
         ) {
-            Row(
+            AppDetailInformation(
+                label = "Total",
+                labelStyle = MaterialTheme.typography.titleLarge,
+                value = state.total.toRupiah(),
+                valueStyle = MaterialTheme.typography.displaySmall,
+                valueColor = MaterialTheme.colorScheme.primary,
+                layout = AppDetailInformationLayout.HORIZONTAL,
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Total",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Text(
-                    text = state.total.toRupiah(),
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+            )
             PrimaryButton(
                 text = "Bayar ${state.total.toRupiah()}",
                 onClick = onPay,
-                enabled = state.cartItems.isNotEmpty() &&
-                        if (state.customerType == CustomerType.MEMBER) {
+                enabled = state.cartItems.isNotEmpty() && if (state.customerType == CustomerType.MEMBER) {
                             state.selectedMember != null
                         } else {
                             true
@@ -131,7 +122,7 @@ fun CartPanel(
                 text = "Kosongkan Keranjang",
                 onClick = onClear,
                 enabled = state.cartItems.isNotEmpty(),
-                reverse = true,
+                reverse = state.cartItems.isNotEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = Spacing.Tight)
@@ -165,31 +156,15 @@ private fun CartItemCard(
             )
             .padding(all = Spacing.Compact)
     ) {
-        Row(
+        AppDetailInformation(
+            label = product.name,
+            labelStyle = MaterialTheme.typography.bodyLarge,
+            value = pricing.total.toRupiah(),
+            valueStyle = MaterialTheme.typography.titleMedium,
+            layout = AppDetailInformationLayout.HORIZONTAL,
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = product.name,
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = pricing.total.toRupiah(),
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-
-        Text(
-            text = when (customerType) {
-                CustomerType.GUEST -> "Harga normal"
-                CustomerType.MEMBER -> "Harga grosir"
-            },
-            modifier = Modifier.padding(top = Spacing.Tight),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -224,7 +199,6 @@ private fun CartItemCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 IconButton(
                     onClick = onDecrease
                 ) {
@@ -241,7 +215,6 @@ private fun CartItemCard(
                     text = item.quantity.toString(),
                     style = MaterialTheme.typography.titleMedium
                 )
-
                 IconButton(
                     onClick = onIncrease,
                     enabled = item.quantity < product.stock
