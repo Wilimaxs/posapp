@@ -367,7 +367,6 @@ class ReceivableViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 showTransactionDialog = false,
-                showPaymentDialog = false,
             )
         }
     }
