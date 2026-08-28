@@ -20,6 +20,7 @@ import com.project.posapp.feature.cashier.receivable.composables.ReceivableFilte
 import com.project.posapp.feature.cashier.receivable.composables.ReceivableList
 import com.project.posapp.feature.cashier.receivable.composables.ReceivableSummarySection
 import com.project.posapp.feature.cashier.receivable.composables.ReceivableTransactionDialog
+import com.project.posapp.feature.cashier.receivable.payment.ReceivablePaymentScreen
 
 @Composable
 fun ReceivableScreen(
@@ -84,8 +85,8 @@ fun ReceivableScreen(
                 onRetry = {
                     viewModel.loadDetail()
                 },
-                onShowTransaction =
-                    viewModel::showTransactionDialog,
+                onShowTransaction = viewModel::showTransactionDialog,
+                onReceivePayment = viewModel::showPaymentDialog,
                 modifier = Modifier.weight(0.58f)
             )
         }
@@ -97,6 +98,16 @@ fun ReceivableScreen(
                 detail = detail,
                 onDismiss =
                     viewModel::dismissTransactionDialog
+            )
+        }
+    }
+
+    if (state.showPaymentDialog) {
+        state.detail?.let { detail ->
+            ReceivablePaymentScreen(
+                detail = detail,
+                onDismiss = viewModel::dismissPaymentDialog,
+                onSuccessFinish = viewModel::refreshAfterPayment
             )
         }
     }

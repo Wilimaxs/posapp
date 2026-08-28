@@ -153,6 +153,7 @@ class ReceivableViewModel @Inject constructor(
                             null
                         },
                         showTransactionDialog = false,
+                        showPaymentDialog = false,
                         currentPage =
                             result.meta?.currentPage ?: page,
                         lastPage =
@@ -197,6 +198,7 @@ class ReceivableViewModel @Inject constructor(
                             null
                         },
                         showTransactionDialog = false,
+                        showPaymentDialog = false,
                         isListLoading = false,
                         isLoadingMore = false,
                         isDetailLoading = if (append) {
@@ -232,6 +234,7 @@ class ReceivableViewModel @Inject constructor(
                 selectedSaleId = saleId,
                 detail = null,
                 showTransactionDialog = false,
+                showPaymentDialog = false,
                 detailErrorMessage = null
             )
         }
@@ -363,8 +366,46 @@ class ReceivableViewModel @Inject constructor(
     fun dismissTransactionDialog() {
         _uiState.update {
             it.copy(
-                showTransactionDialog = false
+                showTransactionDialog = false,
+                showPaymentDialog = false,
             )
         }
+    }
+
+    // For Payment
+    fun showPaymentDialog() {
+        val detail = _uiState.value.detail
+
+        if (
+            detail?.saleId == null ||
+            (detail.remainingBalance ?: 0L) <= 0L
+        ) {
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                showPaymentDialog = true
+            )
+        }
+    }
+
+    fun dismissPaymentDialog() {
+        _uiState.update {
+            it.copy(
+                showPaymentDialog = false
+            )
+        }
+    }
+
+    fun refreshAfterPayment() {
+        _uiState.update {
+            it.copy(
+                showPaymentDialog = false
+            )
+        }
+
+        loadSummary()
+        loadList()
     }
 }

@@ -11,6 +11,7 @@ import com.project.posapp.model.PosProduct
 import com.project.posapp.model.ProductCategory
 import com.project.posapp.model.Receivable
 import com.project.posapp.model.ReceivableDetail
+import com.project.posapp.model.ReceivablePayment
 import com.project.posapp.model.ReceivableSummary
 import retrofit2.Response
 import retrofit2.http.Body
@@ -90,4 +91,10 @@ interface ApiService {
     suspend fun getReceivableDetail(
         @Path("saleId") saleId: Long
     ): Response<ApiResponse<ReceivableDetail>>
+
+    @POST("v1/receivables/{saleId}/payments")
+    suspend fun createReceivablePayment(
+        @Path("saleId") saleId: Long,
+        @Body body: Map<String, @JvmSuppressWildcards Any?>
+    ): Response<ApiResponse<ReceivablePayment>>
 }

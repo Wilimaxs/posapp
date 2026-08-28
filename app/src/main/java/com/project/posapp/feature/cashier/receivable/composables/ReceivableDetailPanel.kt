@@ -46,19 +46,20 @@ fun ReceivableDetailPanel(
     errorMessage: String?,
     onRetry: () -> Unit,
     onShowTransaction: () -> Unit,
+    onReceivePayment: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(
-                MaterialTheme.colorScheme.surfaceContainerLowest,
-                RoundedCornerShape(Radius.Medium)
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                shape = RoundedCornerShape(size = Radius.Medium)
             )
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(Radius.Medium)
+                shape = RoundedCornerShape(size = Radius.Medium)
             )
     ) {
         AppState(
@@ -195,7 +196,7 @@ fun ReceivableDetailPanel(
                     )
                     PrimaryButton(
                         text = "Terima Pembayaran",
-                        onClick = {},
+                        onClick = onReceivePayment,
                         fillMaxWidth = false,
                         height = 44.dp,
                         textStyle = MaterialTheme.typography.labelLarge,

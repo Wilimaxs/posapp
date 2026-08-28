@@ -11,6 +11,7 @@ data class ReceivableUiState(
 
     val selectedSaleId: Long? = null,
     val showTransactionDialog: Boolean = false,
+    val showPaymentDialog: Boolean = false,
 
     val searchQuery: String = "",
     val dueStatus: ReceivableDueStatus? = null,

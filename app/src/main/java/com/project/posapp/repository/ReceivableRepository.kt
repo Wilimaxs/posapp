@@ -5,6 +5,7 @@ import com.project.posapp.core.network.NetworkResult
 import com.project.posapp.core.network.apiSafeCall
 import com.project.posapp.model.Receivable
 import com.project.posapp.model.ReceivableDetail
+import com.project.posapp.model.ReceivablePayment
 import com.project.posapp.model.ReceivableSummary
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,6 +43,27 @@ class ReceivableRepository @Inject constructor(
         return apiSafeCall {
             apiService.getReceivableDetail(
                 saleId = saleId
+            )
+        }
+    }
+
+    suspend fun createPayment(
+        saleId: Long,
+        amount: Long,
+        notes: String?
+    ): NetworkResult<ReceivablePayment> {
+        val body = buildMap<String, Any?> {
+            put("amount", amount)
+            put(
+                "notes",
+                notes?.trim()?.takeIf(String::isNotEmpty)
+            )
+        }
+
+        return apiSafeCall {
+            apiService.createReceivablePayment(
+                saleId = saleId,
+                body = body
             )
         }
     }
