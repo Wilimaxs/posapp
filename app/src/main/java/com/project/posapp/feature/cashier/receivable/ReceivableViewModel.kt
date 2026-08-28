@@ -30,10 +30,6 @@ class ReceivableViewModel @Inject constructor(
     private var detailJob: Job? = null
     private var searchJob: Job? = null
 
-    init {
-        loadReceivables()
-    }
-
     fun loadReceivables() {
         loadSummary()
         loadList()

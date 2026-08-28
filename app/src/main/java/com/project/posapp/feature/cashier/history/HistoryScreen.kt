@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.project.posapp.core.theme.AppBackground
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.history.composables.HistoryDetailPanel
@@ -24,6 +25,13 @@ import com.project.posapp.feature.cashier.history.composables.HistoryTransaction
 fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.loadHistory()
+
+        onPauseOrDispose { }
+    }
+
     val state by viewModel.uiState.collectAsState()
 
     Column(

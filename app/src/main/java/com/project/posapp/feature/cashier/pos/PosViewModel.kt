@@ -27,7 +27,7 @@ class PosViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var requestJob: Job? = null
 
-    init {
+    fun loadPos() {
         loadCategories()
         loadProducts()
     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.project.posapp.core.theme.AppBackground
 import com.project.posapp.core.theme.Spacing
 import com.project.posapp.feature.cashier.pos.composables.CartPanel
@@ -37,8 +38,16 @@ import com.project.posapp.utils.composable.AppForm
 fun PosScreen(
     viewModel: PosViewModel = hiltViewModel(),
 ) {
+    LifecycleResumeEffect(Unit) {
+        viewModel.loadPos()
+
+        onPauseOrDispose { }
+    }
+
     val state by viewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
+
+
     Row(
         modifier = Modifier
             .fillMaxSize()
